@@ -1,0 +1,16 @@
+services:
+  pump_simulator:
+    build:
+      context: ./pump_simulator
+      dockerfile: Dockerfile
+    container_name: petrodyn-pump-simulator
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - WELL_ID=BW-001
+      - SIMULATION_INTERVAL_MS=250
+      - INGESTION_API_URL=http://localhost:3001/api/v1/ingest
+      - SIMULATE_TRANSMISSION_FAILURE=false
+      - NOISE_ENABLED=true
+    restart: unless-stopped
