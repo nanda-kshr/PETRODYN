@@ -1,4 +1,17 @@
 services:
+  data_ingestion:
+    build:
+      context: ./data_ingestion
+      dockerfile: Dockerfile
+    container_name: petrodyn-data-ingestion
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - MONGODB_URI=mongodb+srv://publicUser:lfenK47pOfrv6KlA@mycluster.mt6afrt.mongodb.net/petrodyn?retryWrites=true&w=majority&appName=mycluster
+      - MONGODB_DB_NAME=petrodyn
+    restart: unless-stopped
+
   pump_simulator:
     build:
       context: ./pump_simulator
@@ -9,8 +22,47 @@ services:
     environment:
       - PORT=3001
       - WELL_ID=BW-001
-      - SIMULATION_INTERVAL_MS=250
-      - INGESTION_API_URL=http://localhost:3001/api/v1/ingest
+      - SIMULATION_INTERVAL_MS=1000
+      - INGESTION_API_URL=http://data_ingestion:3002/api/v1/ingest
       - SIMULATE_TRANSMISSION_FAILURE=false
       - NOISE_ENABLED=true
+    depends_on:
+      - data_ingestion
+    restart: unless-stopped
+
+  ai_pipelines:
+    build:
+      context: ./ai_pipelines
+      dockerfile: Dockerfile
+    container_name: petrodyn-ai-pipelines
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - MONGODB_URI=mongodb+srv://publicUser:lfenK47pOfrv6KlA@mycluster.mt6afrt.mongodb.net/petrodyn?retryWrites=true&w=majority&appName=mycluster
+      - MONGODB_DB_NAME=petrodyn
+      - DATA_INGESTION_URL=http://data_ingestion:3002
+      - PIPELINE_INTERVAL_SECONDS=5
+      - DEFAULT_WELL_ID=BW-001
+    depends_on:
+      - data_ingestion
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: petrodyn-dashboard
+    ports:
+      - "3005:3000"
+    environment:
+      - PORT=3000
+      - NEXT_PUBLIC_INGESTION_WS_URL=http://localhost:3002
+      - NEXT_PUBLIC_AI_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_SIMULATOR_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_WELL_ID=BW-001
+    depends_on:
+      - data_ingestion
+      - ai_pipelines
+      - pump_simulator
     restart: unless-stopped
