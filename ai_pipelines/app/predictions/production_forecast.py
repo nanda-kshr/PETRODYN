@@ -6,27 +6,28 @@ def predict_production_rate(
 ) -> Dict[str, Any]:
     """
     4. Production Rate Prediction
-    Inputs: SPM, stroke, VFD, fluid level, tubing pressure, temperature, viscosity, historical production
-    Output: BOPD forecast (7d, 14d, 30d)
+    Horizon: Next 6–24 h | Update freq: Every 15–60 min
     """
     current_bopd = float(latest.get("production_bopd", 30.0))
     current_visc = float(latest.get("viscosity_cp", 12000.0))
-    mu_7d = viscosity_forecast["forecast_7d_cp"]
-    mu_14d = viscosity_forecast["forecast_14d_cp"]
-    mu_30d = viscosity_forecast["forecast_30d_cp"]
+    mu_6h = viscosity_forecast.get("forecast_6h_cp", current_visc * 1.02)
+    mu_24h = viscosity_forecast.get("forecast_24h_cp", current_visc * 1.08)
 
-    # Production is inversely related to viscosity increase due to relative permeability & pump fillage
-    # Q(t) ~ Q0 * (mu_0 / mu_t)^0.25
-    bopd_7d = current_bopd * ((current_visc / max(100.0, mu_7d)) ** 0.25)
-    bopd_14d = current_bopd * ((current_visc / max(100.0, mu_14d)) ** 0.25)
-    bopd_30d = current_bopd * ((current_visc / max(100.0, mu_30d)) ** 0.25)
+    bopd_6h = current_bopd * ((current_visc / max(100.0, mu_6h)) ** 0.25)
+    bopd_24h = current_bopd * ((current_visc / max(100.0, mu_24h)) ** 0.25)
+
+    low_range = round(bopd_24h - 1.5, 0)
+    high_range = round(bopd_24h + 1.5, 0)
 
     return {
+        "horizon": "Next 6–24 h",
+        "update_frequency": "Every 15–60 min",
         "current_bopd": round(current_bopd, 1),
-        "forecast_7d_bopd": round(max(5.0, bopd_7d), 1),
-        "forecast_14d_bopd": round(max(4.0, bopd_14d), 1),
-        "forecast_30d_bopd": round(max(3.0, bopd_30d), 1),
-        "cumulative_30d_oil_bbl": round((current_bopd + bopd_30d) / 2.0 * 30.0, 0)
+        "forecast_6h_bopd": round(max(5.0, bopd_6h), 1),
+        "forecast_24h_bopd": round(max(4.0, bopd_24h), 1),
+        "forecast_range_24h": f"{low_range:.0f}–{high_range:.0f} BOPD",
+        "summary": f"Next 24 h production = {low_range:.0f}–{high_range:.0f} BOPD",
+        "cumulative_24h_oil_bbl": round(bopd_24h, 1)
     }
 
 def predict_production_decline(
@@ -35,15 +36,14 @@ def predict_production_decline(
 ) -> Dict[str, Any]:
     """
     11. Production Decline Prediction
-    Inputs: Historical production, temperature, viscosity, fluid level, pump settings
-    Output: Expected monthly decline (%)
+    Horizon: Cycle / Shift | Update freq: Every 1–6 h
     """
     q_start = prod_forecast["current_bopd"]
-    q_30d = prod_forecast["forecast_30d_bopd"]
+    q_24h = prod_forecast["forecast_24h_bopd"]
 
-    monthly_decline_pct = round(((q_start - q_30d) / max(1.0, q_start)) * 100.0, 1)
+    daily_decline_pct = round(((q_start - q_24h) / max(1.0, q_start)) * 100.0, 2)
+    monthly_decline_pct = round(daily_decline_pct * 30.0, 1)
 
-    # Harmonic / Arps decline characterization
     if monthly_decline_pct > 25.0:
         rate_char = "RAPID_THERMAL_EXHAUSTION"
     elif monthly_decline_pct > 12.0:
@@ -52,9 +52,13 @@ def predict_production_decline(
         rate_char = "STABLE_PLATEAU"
 
     return {
+        "horizon": "Cycle / Shift",
+        "update_frequency": "Every 1–6 h",
+        "daily_decline_pct": daily_decline_pct,
         "expected_monthly_decline_pct": monthly_decline_pct,
         "decline_character": rate_char,
-        "economic_limit_cut_off_days": 45 if monthly_decline_pct > 20 else 90
+        "economic_limit_cut_off_days": 45 if monthly_decline_pct > 20 else 90,
+        "summary": f"Decline = {daily_decline_pct:.2f}%/day ({rate_char.replace('_', ' ')})"
     }
 
 def predict_energy_consumption(
@@ -63,8 +67,7 @@ def predict_energy_consumption(
 ) -> Dict[str, Any]:
     """
     12. Energy Consumption Prediction
-    Inputs: Motor current/power, VFD, SPM, production
-    Output: Future kWh/bbl
+    Horizon: Next 6–24 h | Update freq: Every 15–60 min
     """
     motor_current = float(latest.get("motor_current_a", 50.0))
     vfd_hz = float(latest.get("vfd_frequency_hz", 40.0))
@@ -73,14 +76,17 @@ def predict_energy_consumption(
     daily_kwh = power_kw * 24.0
 
     current_kwh_per_bbl = daily_kwh / max(1.0, prod_forecast["current_bopd"])
-    forecast_7d_kwh_per_bbl = daily_kwh / max(1.0, prod_forecast["forecast_7d_bopd"])
-    forecast_30d_kwh_per_bbl = (daily_kwh * 1.1) / max(1.0, prod_forecast["forecast_30d_bopd"]) # motor works harder as oil cools
+    forecast_6h_kwh_per_bbl = daily_kwh / max(1.0, prod_forecast["forecast_6h_bopd"])
+    forecast_24h_kwh_per_bbl = (daily_kwh * 1.04) / max(1.0, prod_forecast["forecast_24h_bopd"])
 
     return {
-        "current_kwh_per_bbl": round(current_kwh_per_bbl, 2),
-        "forecast_7d_kwh_per_bbl": round(forecast_7d_kwh_per_bbl, 2),
-        "forecast_30d_kwh_per_bbl": round(forecast_30d_kwh_per_bbl, 2),
-        "projected_monthly_energy_cost_trend": "INCREASING_LIFT_COST_PER_BARREL"
+        "horizon": "Next 6–24 h",
+        "update_frequency": "Every 15–60 min",
+        "current_kwh_per_bbl": round(current_kwh_per_bbl, 1),
+        "forecast_6h_kwh_per_bbl": round(forecast_6h_kwh_per_bbl, 1),
+        "forecast_24h_kwh_per_bbl": round(forecast_24h_kwh_per_bbl, 1),
+        "summary": f"Tomorrow = {round(forecast_24h_kwh_per_bbl, 1)} kWh/bbl",
+        "projected_cost_trend": "INCREASING_LIFT_COST_PER_BARREL" if forecast_24h_kwh_per_bbl > current_kwh_per_bbl else "STABLE"
     }
 
 def predict_future_sor(
@@ -89,20 +95,19 @@ def predict_future_sor(
 ) -> Dict[str, Any]:
     """
     13. Future SOR Prediction
-    Inputs: Steam usage + production + temperature + cycle history
-    Output: Future SOR
+    Horizon: Next 1–7 days | Update freq: Every 1–6 h
     """
-    # Cumulative steam allocated for typical Baghewala cycle ~ 2500 m3 CWE = ~15,725 bbls steam
-    # SOR = Total Steam / Cumulative Oil
-    cum_oil_30d = prod_forecast["cumulative_30d_oil_bbl"]
+    # Estimated steam-oil ratio for current CSS cycle
     estimated_steam_pool_bbl = 4500.0
-
-    current_sor = round(estimated_steam_pool_bbl / max(1.0, cum_oil_30d), 2)
-    # If production declines faster than anticipated, SOR rises
-    projected_cycle_end_sor = round(current_sor * 1.25, 2)
+    cum_oil_est = prod_forecast["current_bopd"] * 30.0
+    current_sor = round(estimated_steam_pool_bbl / max(1.0, cum_oil_est), 1)
+    projected_cycle_end_sor = round(current_sor * 1.25, 1)
 
     return {
+        "horizon": "Next 1–7 days",
+        "update_frequency": "Every 1–6 h",
         "current_sor_forecast": current_sor,
         "projected_cycle_end_sor": projected_cycle_end_sor,
-        "efficiency_status": "ECONOMIC_WINDOW" if projected_cycle_end_sor < 5.0 else "STEAM_INTENSIVE_CANDIDATE_FOR_RESTIMULATION"
+        "summary": f"Expected SOR next cycle = {projected_cycle_end_sor:.1f}",
+        "efficiency_status": "ECONOMIC_WINDOW" if projected_cycle_end_sor < 6.0 else "STEAM_INTENSIVE_RESTIMULATE"
     }

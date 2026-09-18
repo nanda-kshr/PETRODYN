@@ -117,82 +117,131 @@ export interface AnalyticsData {
   well_health_score?: WellHealthScore;
 }
 
+export interface OptimizationAdvisoryItem {
+  parameter: string;
+  decision_interval: string;
+  current_setting: string;
+  recommended_action: string;
+  rationale: string;
+}
+
 export interface PredictionsData {
   reservoir_temperature?: {
+    horizon?: string;
+    update_frequency?: string;
     current_temperature_c: number;
-    forecast_7d_c: number;
-    forecast_14d_c: number;
-    forecast_30d_c: number;
-    asymptotic_ambient_c: number;
-    thermal_decay_constant: number;
+    forecast_6h_c?: number;
+    forecast_24h_c?: number;
+    forecast_72h_c?: number;
+    summary?: string;
+    asymptotic_ambient_c?: number;
+    thermal_decay_constant?: number;
   };
   reservoir_cooling?: {
-    projected_cooling_rate_7d_c_per_day: number;
-    projected_cooling_rate_14d_c_per_day: number;
+    horizon?: string;
+    update_frequency?: string;
+    cooling_rate_c_per_day: number;
     days_until_cooling_threshold_55c: number;
     recommended_css_resteam_window_days: number;
+    summary?: string;
   };
   oil_viscosity?: {
+    horizon?: string;
+    update_frequency?: string;
     current_viscosity_cp: number;
-    forecast_7d_cp: number;
-    forecast_14d_cp: number;
-    forecast_30d_cp: number;
-    viscosity_surge_ratio_30d: number;
+    forecast_6h_cp?: number;
+    forecast_24h_cp?: number;
+    forecast_72h_cp?: number;
+    summary?: string;
     mobility_risk: string;
   };
   production_rate?: {
+    horizon?: string;
+    update_frequency?: string;
     current_bopd: number;
-    forecast_7d_bopd: number;
-    forecast_14d_bopd: number;
-    forecast_30d_bopd: number;
-    cumulative_30d_oil_bbl: number;
+    forecast_6h_bopd?: number;
+    forecast_24h_bopd?: number;
+    forecast_range_24h?: string;
+    summary?: string;
+    cumulative_24h_oil_bbl?: number;
   };
   pump_behavior?: {
+    horizon?: string;
+    update_frequency?: string;
     future_peak_rod_load_kn: number;
+    future_min_rod_load_kn?: number;
     future_fillage_pct: number;
+    summary?: string;
     expected_performance_regime: string;
   };
   pump_efficiency?: {
-    future_volumetric_efficiency_pct: number;
-    future_mechanical_efficiency_pct: number;
+    horizon?: string;
+    update_frequency?: string;
+    current_volumetric_efficiency_pct?: number;
+    forecast_6h_volumetric_efficiency_pct?: number;
+    forecast_24h_volumetric_efficiency_pct?: number;
+    summary?: string;
     efficiency_trend: string;
   };
   rod_floating?: {
+    horizon?: string;
+    update_frequency?: string;
     floating_probability: number;
+    risk_next_10min_pct?: number;
     status: string;
-    trigger_cause: string;
+    summary?: string;
     recommended_remedy: string;
   };
   impact_loading?: {
+    horizon?: string;
+    update_frequency?: string;
     impact_probability: number;
     impact_severity: string;
-    description: string;
+    summary?: string;
   };
   rod_failure?: {
+    horizon?: string;
+    update_frequency?: string;
     failure_probability: number;
+    failure_risk_7d_pct?: number;
     fatigue_risk_level: string;
     estimated_cycles_to_failure: number;
-    primary_threat_vector: string;
+    summary?: string;
   };
   pump_unsetting?: {
+    horizon?: string;
+    update_frequency?: string;
     unsetting_probability: number;
+    unsetting_risk_6h_pct?: number;
     status: string;
+    summary?: string;
     recommended_action: string;
   };
   production_decline?: {
+    horizon?: string;
+    update_frequency?: string;
+    daily_decline_pct?: number;
     expected_monthly_decline_pct: number;
     decline_character: string;
+    summary?: string;
     economic_limit_cut_off_days: number;
   };
   energy_consumption?: {
+    horizon?: string;
+    update_frequency?: string;
     current_kwh_per_bbl: number;
-    forecast_7d_kwh_per_bbl: number;
-    forecast_30d_kwh_per_bbl: number;
-    projected_monthly_energy_cost_trend: string;
+    forecast_6h_kwh_per_bbl?: number;
+    forecast_24h_kwh_per_bbl?: number;
+    summary?: string;
+    projected_cost_trend?: string;
   };
   sor?: {
+    horizon?: string;
+    update_frequency?: string;
     current_sor_forecast: number;
     projected_cycle_end_sor: number;
+    summary?: string;
     efficiency_status: string;
   };
+  optimization_advisory?: OptimizationAdvisoryItem[];
 }

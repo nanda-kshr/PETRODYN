@@ -7,11 +7,12 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   CartesianGrid,
 } from 'recharts';
 import { TelemetryRecord } from '@/types/telemetry';
 import { Gauge, TrendingUp } from 'lucide-react';
+import { Tooltip } from './Tooltip';
 
 interface TelemetryGraphsProps {
   history: TelemetryRecord[];
@@ -22,7 +23,7 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
     let timeLabel = `${i}`;
     try {
       const d = new Date(rec.timestamp);
-      timeLabel = d.toTimeString().split(' ')[0].slice(3); // mm:ss
+      timeLabel = d.toTimeString().split(' ')[0].slice(3);
     } catch (_) {}
 
     return {
@@ -38,18 +39,29 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       {/* Chart 1: Rod Load & Motor Current */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 to-cyan-400" />
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-            <Gauge className="w-4 h-4 text-amber-400" />
-            Live Mechanical & Electrical Load
-          </h3>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-sky-950/80 border border-sky-800 text-sky-400 tracking-wider">
+              ANALYTICS &bull; LIVE STREAM
+            </span>
+            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-1.5">
+              <Gauge className="w-4 h-4 text-amber-400" />
+              Live Mechanical & Electrical Load
+            </h3>
+            <Tooltip
+              title="Live Load & Current Stream"
+              category="ANALYTICS"
+              content="Real-time telemetry showing mechanical load on the polished rod (kN) alongside surface electric motor draw current (A)."
+            />
+          </div>
           <div className="flex items-center gap-3 text-xs font-mono">
             <span className="flex items-center gap-1.5 text-amber-400">
               <span className="w-2.5 h-0.5 bg-amber-400 inline-block" /> Rod Load (kN)
             </span>
             <span className="flex items-center gap-1.5 text-sky-400">
-              <span className="w-2.5 h-0.5 bg-sky-400 inline-block" /> Motor Current (A)
+              <span className="w-2.5 h-0.5 bg-sky-400 inline-block" /> Current (A)
             </span>
           </div>
         </div>
@@ -62,27 +74,11 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
                 <XAxis dataKey="time" stroke="#64748b" fontSize={10} tickLine={false} />
                 <YAxis yAxisId="left" stroke="#f59e0b" fontSize={10} domain={['dataMin - 5', 'dataMax + 10']} />
                 <YAxis yAxisId="right" orientation="right" stroke="#38bdf8" fontSize={10} domain={['dataMin - 5', 'dataMax + 10']} />
-                <Tooltip
+                <RechartsTooltip
                   contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '11px' }}
                 />
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="rod_load_kn"
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="motor_current_a"
-                  stroke="#38bdf8"
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
+                <Line yAxisId="left" type="monotone" dataKey="rod_load_kn" stroke="#f59e0b" strokeWidth={2} dot={false} isAnimationActive={false} />
+                <Line yAxisId="right" type="monotone" dataKey="motor_current_a" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
@@ -94,12 +90,23 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
       </div>
 
       {/* Chart 2: Production Rate & Fluid Level */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 to-cyan-400" />
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
-            Live Inflow & Production
-          </h3>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-sky-950/80 border border-sky-800 text-sky-400 tracking-wider">
+              ANALYTICS &bull; LIVE STREAM
+            </span>
+            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-1.5">
+              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              Live Inflow & Production
+            </h3>
+            <Tooltip
+              title="Inflow & Production Stream"
+              category="ANALYTICS"
+              content="Real-time stream of gross oil production (BOPD) versus downhole fluid level (depth in meters from surface)."
+            />
+          </div>
           <div className="flex items-center gap-3 text-xs font-mono">
             <span className="flex items-center gap-1.5 text-emerald-400">
               <span className="w-2.5 h-0.5 bg-emerald-400 inline-block" /> Production (BOPD)
@@ -118,27 +125,11 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
                 <XAxis dataKey="time" stroke="#64748b" fontSize={10} tickLine={false} />
                 <YAxis yAxisId="left" stroke="#10b981" fontSize={10} domain={['dataMin - 5', 'dataMax + 5']} />
                 <YAxis yAxisId="right" orientation="right" stroke="#818cf8" fontSize={10} domain={['dataMin - 20', 'dataMax + 20']} />
-                <Tooltip
+                <RechartsTooltip
                   contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '11px' }}
                 />
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="production_bopd"
-                  stroke="#10b981"
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="fluid_level_m"
-                  stroke="#818cf8"
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
+                <Line yAxisId="left" type="monotone" dataKey="production_bopd" stroke="#10b981" strokeWidth={2} dot={false} isAnimationActive={false} />
+                <Line yAxisId="right" type="monotone" dataKey="fluid_level_m" stroke="#818cf8" strokeWidth={2} dot={false} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
