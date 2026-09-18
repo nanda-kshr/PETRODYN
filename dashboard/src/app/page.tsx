@@ -32,7 +32,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0f1d] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
       {/* Top Navigation & Status Bar */}
       <Header
         wellId={wellId}
@@ -45,14 +45,14 @@ export default function DashboardPage() {
       {/* Main Grid Content */}
       <main className="flex-1 p-6 space-y-6 max-w-[1600px] w-full mx-auto">
         {/* Navigation & Mode Filter Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 bg-white border border-gray-200 p-2.5 rounded-xl shadow-sm">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab('all')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'all'
-                  ? 'bg-slate-800 text-white border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                  ? 'bg-gray-900 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" /> All Overview
@@ -62,41 +62,45 @@ export default function DashboardPage() {
               onClick={() => setActiveTab('analytics')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'analytics'
-                  ? 'bg-sky-950 text-sky-300 border border-sky-800 shadow-sm'
-                  : 'text-slate-400 hover:text-sky-300 hover:bg-slate-800/50'
+                  ? 'bg-sky-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-sky-700 hover:bg-sky-50'
               }`}
             >
-              <Activity className="w-3.5 h-3.5 text-sky-400" />
+              <Activity className="w-3.5 h-3.5" />
               <span>Real-Time Analytics</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-sky-900/60 font-mono">15</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                activeTab === 'analytics' ? 'bg-sky-700 text-sky-100' : 'bg-sky-100 text-sky-800'
+              }`}>15</span>
             </button>
 
             <button
               onClick={() => setActiveTab('predictions')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'predictions'
-                  ? 'bg-purple-950 text-purple-300 border border-purple-800 shadow-sm'
-                  : 'text-slate-400 hover:text-purple-300 hover:bg-slate-800/50'
+                  ? 'bg-purple-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-purple-700 hover:bg-purple-50'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              <Sparkles className="w-3.5 h-3.5" />
               <span>AI Predictions &amp; Risk</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-purple-900/60 font-mono">13</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                activeTab === 'predictions' ? 'bg-purple-700 text-purple-100' : 'bg-purple-100 text-purple-800'
+              }`}>13</span>
             </button>
 
             <button
               onClick={() => setActiveTab('simulator')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'simulator'
-                  ? 'bg-emerald-950 text-emerald-300 border border-emerald-800 shadow-sm'
-                  : 'text-slate-400 hover:text-emerald-300 hover:bg-slate-800/50'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50'
               }`}
             >
-              <Sliders className="w-3.5 h-3.5 text-emerald-400" /> Simulator Controls
+              <Sliders className="w-3.5 h-3.5" /> Simulator Controls
             </button>
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-slate-400 font-mono">
+          <div className="flex items-center gap-4 text-xs text-gray-500 font-mono">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-sky-400" /> Analytics (Current)
             </span>
@@ -109,14 +113,14 @@ export default function DashboardPage() {
         {/* SECTION 1: REAL-TIME ANALYTICS (Current State Diagnostics) */}
         {(activeTab === 'all' || activeTab === 'analytics') && (
           <section className="space-y-4">
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-              <span className="p-1 rounded bg-sky-500/10 border border-sky-500/30 text-sky-400">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
+              <span className="p-1 rounded bg-sky-500/10 border border-sky-500/30 text-sky-600">
                 <Activity className="w-4 h-4" />
               </span>
-              <h2 className="text-base font-bold text-white tracking-tight">
+              <h2 className="text-base font-bold text-gray-900 tracking-tight">
                 Real-Time Diagnostics &amp; Operational Analytics
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded bg-sky-950 border border-sky-800 text-sky-300 font-mono">
+              <span className="text-xs px-2 py-0.5 rounded bg-sky-50 border border-sky-200 text-sky-700 font-mono">
                 15 Metrics Active
               </span>
             </div>
@@ -135,14 +139,14 @@ export default function DashboardPage() {
         {/* SECTION 2: PREDICTIVE MODELS & MULTI-HORIZON RISK OUTLOOK */}
         {(activeTab === 'all' || activeTab === 'predictions') && (
           <section className="space-y-4 pt-2">
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-              <span className="p-1 rounded bg-purple-500/10 border border-purple-500/30 text-purple-400">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
+              <span className="p-1 rounded bg-purple-500/10 border border-purple-500/30 text-purple-600">
                 <Sparkles className="w-4 h-4" />
               </span>
-              <h2 className="text-base font-bold text-white tracking-tight">
+              <h2 className="text-base font-bold text-gray-900 tracking-tight">
                 AI Predictive Modeling &amp; Multi-Horizon Risk Outlook
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded bg-purple-950 border border-purple-800 text-purple-300 font-mono">
+              <span className="text-xs px-2 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700 font-mono">
                 13 Predictions Active
               </span>
             </div>
@@ -178,7 +182,7 @@ export default function DashboardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 px-6 py-3 text-center text-xs text-slate-500">
+      <footer className="border-t border-gray-200 bg-gray-50 px-6 py-3 text-center text-xs text-gray-400">
         THERMO-LIFT Prototype &bull; Real-time SRP &amp; CSS Well Digital Twin &bull; Baghewala Field Heavy Oil Pilot
       </footer>
     </div>

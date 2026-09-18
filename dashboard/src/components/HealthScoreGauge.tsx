@@ -21,10 +21,10 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
   };
 
   const getColor = (val: number) => {
-    if (val >= 80) return 'text-emerald-400 stroke-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-    if (val >= 60) return 'text-sky-400 stroke-sky-400 bg-sky-500/10 border-sky-500/20';
-    if (val >= 45) return 'text-amber-400 stroke-amber-400 bg-amber-500/10 border-amber-500/20';
-    return 'text-rose-400 stroke-rose-400 bg-rose-500/10 border-rose-500/20';
+    if (val >= 80) return 'text-emerald-700 stroke-emerald-500 bg-emerald-50 border-emerald-200';
+    if (val >= 60) return 'text-sky-700 stroke-sky-500 bg-sky-50 border-sky-200';
+    if (val >= 45) return 'text-amber-700 stroke-amber-500 bg-amber-50 border-amber-200';
+    return 'text-rose-700 stroke-rose-500 bg-rose-50 border-rose-200';
   };
 
   const radius = 58;
@@ -32,17 +32,17 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col justify-between relative overflow-hidden">
       {/* Category Indicator Accent */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 to-cyan-400" />
 
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-sky-950/80 border border-sky-800 text-sky-400 tracking-wider">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-sky-50 border border-sky-200 text-sky-700 tracking-wider">
             ANALYTICS &bull; CURRENT STATE
           </span>
-          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-sky-400" />
+          <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-sky-600" />
             Well Health Score
           </h3>
           <Tooltip
@@ -60,13 +60,13 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
         {/* Gauge Circle */}
         <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 140 140">
-            <circle cx="70" cy="70" r={radius} className="stroke-slate-800" strokeWidth="10" fill="transparent" />
+            <circle cx="70" cy="70" r={radius} className="stroke-gray-100" strokeWidth="10" fill="transparent" />
             <circle
               cx="70"
               cy="70"
               r={radius}
               className={`transition-all duration-1000 ease-out ${
-                score >= 80 ? 'stroke-emerald-400' : score >= 60 ? 'stroke-sky-400' : score >= 45 ? 'stroke-amber-400' : 'stroke-rose-400'
+                score >= 80 ? 'stroke-emerald-500' : score >= 60 ? 'stroke-sky-500' : score >= 45 ? 'stroke-amber-500' : 'stroke-rose-500'
               }`}
               strokeWidth="10"
               strokeDasharray={circumference}
@@ -76,17 +76,17 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
             />
           </svg>
           <div className="absolute flex flex-col items-center justify-center">
-            <span className="text-3xl font-extrabold text-white tracking-tight">{score}</span>
-            <span className="text-[10px] text-slate-400 tracking-wider">SCORE (0-100)</span>
+            <span className="text-3xl font-extrabold text-gray-900 tracking-tight">{score}</span>
+            <span className="text-[10px] text-gray-500 tracking-wider">SCORE (0-100)</span>
           </div>
         </div>
 
         {/* 5 Sub-scores Breakdown with Tooltips */}
         <div className="flex-1 w-full space-y-3 text-xs">
           <div className="space-y-1.5">
-            <div className="flex justify-between text-slate-300">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <Flame className="w-3.5 h-3.5 text-rose-400" /> Thermal State (25%)
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-1.5 text-gray-500">
+                <Flame className="w-3.5 h-3.5 text-rose-600" /> Thermal State (25%)
                 <Tooltip
                   title="Thermal State Sub-Score"
                   category="ANALYTICS"
@@ -95,15 +95,15 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.thermal_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div className="bg-rose-400 h-2 rounded-full transition-all" style={{ width: `${sub.thermal_score}%` }} />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between text-slate-300">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <Wrench className="w-3.5 h-3.5 text-amber-400" /> Mechanical Lift (25%)
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-1.5 text-gray-500">
+                <Wrench className="w-3.5 h-3.5 text-amber-600" /> Mechanical Lift (25%)
                 <Tooltip
                   title="Mechanical Lift Sub-Score"
                   category="ANALYTICS"
@@ -112,15 +112,15 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.mechanical_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div className="bg-amber-400 h-2 rounded-full transition-all" style={{ width: `${sub.mechanical_score}%` }} />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between text-slate-300">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <BarChart3 className="w-3.5 h-3.5 text-emerald-400" /> Production Efficiency (20%)
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-1.5 text-gray-500">
+                <BarChart3 className="w-3.5 h-3.5 text-emerald-600" /> Production Efficiency (20%)
                 <Tooltip
                   title="Volumetric Efficiency Sub-Score"
                   category="ANALYTICS"
@@ -129,15 +129,15 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.production_efficiency_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div className="bg-emerald-400 h-2 rounded-full transition-all" style={{ width: `${sub.production_efficiency_score}%` }} />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between text-slate-300">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <Zap className="w-3.5 h-3.5 text-sky-400" /> Electrical / Motor (15%)
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-1.5 text-gray-500">
+                <Zap className="w-3.5 h-3.5 text-sky-600" /> Electrical / Motor (15%)
                 <Tooltip
                   title="Electrical Motor Load Sub-Score"
                   category="ANALYTICS"
@@ -146,15 +146,15 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.electrical_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div className="bg-sky-400 h-2 rounded-full transition-all" style={{ width: `${sub.electrical_score}%` }} />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex justify-between text-slate-300">
-              <span className="flex items-center gap-1.5 text-slate-400">
-                <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /> Sensor Health (15%)
+            <div className="flex justify-between text-gray-700">
+              <span className="flex items-center gap-1.5 text-gray-500">
+                <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" /> Sensor Health (15%)
                 <Tooltip
                   title="Sensor Data Quality Sub-Score"
                   category="ANALYTICS"
@@ -163,7 +163,7 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.sensor_health_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div className="bg-purple-400 h-2 rounded-full transition-all" style={{ width: `${sub.sensor_health_score}%` }} />
             </div>
           </div>
