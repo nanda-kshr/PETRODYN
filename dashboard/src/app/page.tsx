@@ -150,15 +150,15 @@ export default function DashboardPage() {
             {/* Predictive Mechanical Risk Guard */}
             <PredictiveRiskPanel predictions={predictions} />
 
-            {/* Thermal Decay & 30-Day Production Forecasts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ThermalViscosityCard
-                analytics={analytics}
-                predictions={predictions}
-                latest={latest}
-              />
-              <ProductionForecastPanel predictions={predictions} />
-            </div>
+            {/* Shift Thermal Decay & Viscosity Dynamics */}
+            <ThermalViscosityCard
+              analytics={analytics}
+              predictions={predictions}
+              latest={latest}
+            />
+
+            {/* Operational & Cycle Production/Energy Forecasts */}
+            <ProductionForecastPanel predictions={predictions} />
 
             {/* Field Optimization Decision Cadence Matrix */}
             <OptimizationAdvisoryCard items={predictions?.optimization_advisory} />

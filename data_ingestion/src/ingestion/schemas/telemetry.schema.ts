@@ -26,6 +26,12 @@ export class Telemetry {
   @Prop({ required: true, index: true })
   well_id: string;
 
+  @Prop({ default: 'PRODUCTION' })
+  operating_stage: string;
+
+  @Prop({ default: true })
+  pump_running: boolean;
+
   @Prop({ required: true })
   vfd_frequency_hz: number;
 

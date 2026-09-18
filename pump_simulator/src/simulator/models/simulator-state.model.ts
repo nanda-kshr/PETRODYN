@@ -1,4 +1,10 @@
+export type OperatingStage = 'STEAM' | 'SOAK' | 'PRODUCTION';
+
 export interface SimulatorState {
+  // CSS Lifecycle & Pump Status
+  operating_stage: OperatingStage;
+  pump_running: boolean;
+
   // Operating controls
   vfd_frequency_hz: number;
   stroke_length_m: number;
@@ -22,6 +28,8 @@ export interface SimulatorState {
 }
 
 export const DEFAULT_SIMULATOR_STATE: SimulatorState = {
+  operating_stage: 'PRODUCTION',
+  pump_running: true,
   vfd_frequency_hz: 40.0,
   stroke_length_m: 2.5,
   spm: 5.5,

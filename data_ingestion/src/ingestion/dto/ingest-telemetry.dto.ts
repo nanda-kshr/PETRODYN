@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsBoolean } from 'class-validator';
 
 export class IngestTelemetryDto {
   @IsOptional()
@@ -7,6 +7,14 @@ export class IngestTelemetryDto {
 
   @IsString()
   well_id: string;
+
+  @IsOptional()
+  @IsString()
+  operating_stage?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  pump_running?: boolean;
 
   @IsNumber()
   vfd_frequency_hz: number;

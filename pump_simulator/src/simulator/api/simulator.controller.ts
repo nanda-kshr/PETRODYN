@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Body,
+  Param,
   UsePipes,
   ValidationPipe,
   HttpCode,
@@ -28,6 +29,8 @@ export class SimulatorController {
   getState() {
     const state = this.stateService.getState();
     return {
+      operating_stage: state.operating_stage,
+      pump_running: state.pump_running,
       vfd_frequency_hz: state.vfd_frequency_hz,
       stroke_length_m: state.stroke_length_m,
       spm: state.spm,
@@ -57,6 +60,8 @@ export class SimulatorController {
       success: true,
       message: `Parameter '${dto.parameter}' successfully updated to ${dto.value}`,
       state: {
+        operating_stage: updatedState.operating_stage,
+        pump_running: updatedState.pump_running,
         vfd_frequency_hz: updatedState.vfd_frequency_hz,
         stroke_length_m: updatedState.stroke_length_m,
         spm: updatedState.spm,
@@ -70,6 +75,45 @@ export class SimulatorController {
         viscosity_cp: updatedState.viscosity_cp,
       },
     };
+  }
+
+  /**
+   * Applies a Cyclic Steam Stimulation (CSS) lifecycle stage:
+   * - 'STEAM' (Huff): Pump STOPPED (0 SPM), superheated steam downhole (280°C, 125 bar)
+   * - 'SOAK': Pump STOPPED (0 SPM), shut-in soaking (160°C, 45 bar)
+   * - 'PRODUCTION' (Puff): Pump RUNNING (5.5 SPM, 40 Hz), hot flush production (85°C, 18.5 bar)
+   */
+  @Post('css/:stage')
+  @HttpCode(HttpStatus.OK)
+  applyCssStage(@Param('stage') stage: string) {
+    const updatedState = this.stateService.applyCssStage(stage);
+    return {
+      success: true,
+      stage: updatedState.operating_stage,
+      pump_running: updatedState.pump_running,
+      message: `CSS Stage '${updatedState.operating_stage}' applied successfully`,
+      state: {
+        operating_stage: updatedState.operating_stage,
+        pump_running: updatedState.pump_running,
+        vfd_frequency_hz: updatedState.vfd_frequency_hz,
+        stroke_length_m: updatedState.stroke_length_m,
+        spm: updatedState.spm,
+        rod_position_m: updatedState.rod_position_m,
+        rod_load_kn: updatedState.rod_load_kn,
+        motor_current_a: updatedState.motor_current_a,
+        tubing_pressure_bar: updatedState.tubing_pressure_bar,
+        fluid_level_m: updatedState.fluid_level_m,
+        production_bopd: updatedState.production_bopd,
+        temperature_c: updatedState.temperature_c,
+        viscosity_cp: updatedState.viscosity_cp,
+      },
+    };
+  }
+
+  @Post('stage/:stage')
+  @HttpCode(HttpStatus.OK)
+  setStage(@Param('stage') stage: string) {
+    return this.applyCssStage(stage);
   }
 
   /**

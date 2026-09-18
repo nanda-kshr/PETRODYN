@@ -75,6 +75,8 @@ export class TelemetryGeneratorService {
     return {
       timestamp: new Date().toISOString(),
       well_id: this.wellId,
+      operating_stage: state.operating_stage,
+      pump_running: state.pump_running,
       vfd_frequency_hz: this.round(state.vfd_frequency_hz, 1),
       stroke_length_m: this.round(state.stroke_length_m, 2),
       spm: this.round(state.spm, 1),

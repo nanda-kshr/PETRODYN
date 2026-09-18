@@ -1,6 +1,8 @@
 export interface TelemetryRecord {
   timestamp: string;
   well_id: string;
+  operating_stage?: 'STEAM' | 'SOAK' | 'PRODUCTION';
+  pump_running?: boolean;
   vfd_frequency_hz: number;
   stroke_length_m: number;
   spm: number;

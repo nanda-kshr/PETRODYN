@@ -82,8 +82,8 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
         </div>
 
         {/* 5 Sub-scores Breakdown with Tooltips */}
-        <div className="flex-1 w-full space-y-2 text-xs">
-          <div className="space-y-1">
+        <div className="flex-1 w-full space-y-3 text-xs">
+          <div className="space-y-1.5">
             <div className="flex justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
                 <Flame className="w-3.5 h-3.5 text-rose-400" /> Thermal State (25%)
@@ -95,12 +95,12 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.thermal_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-rose-400 h-1.5 rounded-full transition-all" style={{ width: `${sub.thermal_score}%` }} />
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-rose-400 h-2 rounded-full transition-all" style={{ width: `${sub.thermal_score}%` }} />
             </div>
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
                 <Wrench className="w-3.5 h-3.5 text-amber-400" /> Mechanical Lift (25%)
@@ -112,12 +112,12 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.mechanical_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-amber-400 h-1.5 rounded-full transition-all" style={{ width: `${sub.mechanical_score}%` }} />
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-amber-400 h-2 rounded-full transition-all" style={{ width: `${sub.mechanical_score}%` }} />
             </div>
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
                 <BarChart3 className="w-3.5 h-3.5 text-emerald-400" /> Production Efficiency (20%)
@@ -129,12 +129,12 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.production_efficiency_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-emerald-400 h-1.5 rounded-full transition-all" style={{ width: `${sub.production_efficiency_score}%` }} />
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-emerald-400 h-2 rounded-full transition-all" style={{ width: `${sub.production_efficiency_score}%` }} />
             </div>
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
                 <Zap className="w-3.5 h-3.5 text-sky-400" /> Electrical / Motor (15%)
@@ -146,25 +146,25 @@ export const HealthScoreGauge: React.FC<HealthScoreGaugeProps> = ({ healthScore 
               </span>
               <span className="font-mono font-medium">{sub.electrical_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-sky-400 h-1.5 rounded-full transition-all" style={{ width: `${sub.electrical_score}%` }} />
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-sky-400 h-2 rounded-full transition-all" style={{ width: `${sub.electrical_score}%` }} />
             </div>
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex justify-between text-slate-300">
               <span className="flex items-center gap-1.5 text-slate-400">
                 <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /> Sensor Health (15%)
                 <Tooltip
                   title="Sensor Data Quality Sub-Score"
                   category="ANALYTICS"
-                  content="Sanity validation checking for missing telemetry channels, stuck/flatline sensors, calibration drift, and unphysical outliers."
+                  content="Continuously assesses signal integrity across all 18 sensors. Flags frozen channels, missing packets, and unphysical outliers."
                 />
               </span>
               <span className="font-mono font-medium">{sub.sensor_health_score}%</span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-purple-400 h-1.5 rounded-full transition-all" style={{ width: `${sub.sensor_health_score}%` }} />
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div className="bg-purple-400 h-2 rounded-full transition-all" style={{ width: `${sub.sensor_health_score}%` }} />
             </div>
           </div>
         </div>

@@ -39,8 +39,23 @@ export const Header: React.FC<HeaderProps> = ({
       {latest && (
         <div className="hidden lg:flex items-center gap-4 bg-slate-950/80 px-4 py-1.5 rounded-lg border border-slate-800 text-xs">
           <div>
+            <span className="text-slate-500 block text-[10px]">CSS STAGE</span>
+            <span className={`font-bold ${
+              latest.operating_stage === 'STEAM'
+                ? 'text-rose-400'
+                : latest.operating_stage === 'SOAK'
+                ? 'text-amber-400'
+                : 'text-emerald-400'
+            }`}>
+              {latest.operating_stage || (latest.spm <= 0.05 ? 'STOPPED' : 'PROD')}
+            </span>
+          </div>
+          <div className="h-6 w-px bg-slate-800" />
+          <div>
             <span className="text-slate-500 block text-[10px]">SPM</span>
-            <span className="font-semibold text-sky-400">{latest.spm}</span>
+            <span className="font-semibold text-sky-400">
+              {latest.spm <= 0.05 ? '0.0 (OFF)' : latest.spm}
+            </span>
           </div>
           <div className="h-6 w-px bg-slate-800" />
           <div>
@@ -67,6 +82,21 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Connection status and sync indicator */}
       <div className="flex items-center gap-3 text-xs">
+        {latest?.operating_stage === 'STEAM' && (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-950 border border-rose-700 text-rose-300 animate-pulse">
+            🔥 STEAM INJECTION
+          </span>
+        )}
+        {latest?.operating_stage === 'SOAK' && (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-950 border border-amber-700 text-amber-300 animate-pulse">
+            ⏳ SOAKING
+          </span>
+        )}
+        {latest?.operating_stage === 'PRODUCTION' && (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 border border-emerald-700 text-emerald-300">
+            ▶️ PRODUCTION
+          </span>
+        )}
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700">
           <span className="font-mono text-slate-300 font-medium">WELL: {wellId}</span>
         </div>

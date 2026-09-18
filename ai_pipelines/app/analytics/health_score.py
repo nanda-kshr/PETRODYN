@@ -28,27 +28,35 @@ def calculate_well_health_score(
         thermal_score = max(20.0, temp_c)
 
     # 2. Mechanical score (0-100)
-    min_load = pump_load.get("min_load_kn", 40.0)
-    peak_load = pump_load.get("peak_load_kn", 120.0)
-    mech_penalties = 0.0
-    if min_load < 20.0:
-        mech_penalties += (20.0 - min_load) * 2.5 # Rod floating penalty
-    if peak_load > 140.0:
-        mech_penalties += (peak_load - 140.0) * 1.5 # Overload penalty
-    mechanical_score = max(20.0, min(100.0, 100.0 - mech_penalties))
+    stage = str(pump_state.get("operating_stage", "PRODUCTION")).upper()
+    is_parked = stage in ("STEAM", "SOAK") or pump_state.get("state") == "STOP"
 
-    # 3. Production efficiency score (0-100)
-    vol_eff = volumetric_eff.get("volumetric_efficiency_pct", 75.0)
-    production_score = min(100.0, max(25.0, vol_eff * 1.05))
-
-    # 4. Electrical score (0-100)
-    motor_load_pct = motor_load.get("motor_load_pct", 65.0)
-    if motor_load_pct > 100.0:
-        elec_score = max(30.0, 100.0 - (motor_load_pct - 100.0) * 2.0)
-    elif motor_load_pct < 20.0:
-        elec_score = 65.0 # underload / idle
+    if is_parked:
+        mechanical_score = 98.0
+        production_score = 95.0  # Planned shut-in for thermal stimulation
+        elec_score = 98.0        # Motor turned off safely
     else:
-        elec_score = 92.0
+        min_load = pump_load.get("min_load_kn", 40.0)
+        peak_load = pump_load.get("peak_load_kn", 120.0)
+        mech_penalties = 0.0
+        if min_load < 20.0:
+            mech_penalties += (20.0 - min_load) * 2.5 # Rod floating penalty
+        if peak_load > 140.0:
+            mech_penalties += (peak_load - 140.0) * 1.5 # Overload penalty
+        mechanical_score = max(20.0, min(100.0, 100.0 - mech_penalties))
+
+        # 3. Production efficiency score (0-100)
+        vol_eff = volumetric_eff.get("volumetric_efficiency_pct", 75.0)
+        production_score = min(100.0, max(25.0, vol_eff * 1.05))
+
+        # 4. Electrical score (0-100)
+        motor_load_pct = motor_load.get("motor_load_pct", 65.0)
+        if motor_load_pct > 100.0:
+            elec_score = max(30.0, 100.0 - (motor_load_pct - 100.0) * 2.0)
+        elif motor_load_pct < 20.0:
+            elec_score = 65.0 # underload / idle
+        else:
+            elec_score = 92.0
 
     # 5. Data quality score (0-100)
     data_quality_score = float(sensor_health.get("sensor_health_score", 100))

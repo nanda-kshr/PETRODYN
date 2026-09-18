@@ -2,16 +2,24 @@ import math
 from typing import List, Dict, Any
 
 def analyze_pump_operating_state(latest: Dict[str, Any]) -> Dict[str, Any]:
+    operating_stage = str(latest.get("operating_stage", "PRODUCTION")).upper()
+    pump_running_flag = latest.get("pump_running")
     spm = float(latest.get("spm", 0.0))
     vfd = float(latest.get("vfd_frequency_hz", 0.0))
     stroke = float(latest.get("stroke_length_m", 0.0))
     pos = float(latest.get("rod_position_m", 0.0))
 
-    is_running = spm > 0.5 and vfd > 5.0
+    if pump_running_flag is not None:
+        is_running = bool(pump_running_flag) and spm > 0.05
+    else:
+        is_running = spm > 0.05 and vfd > 0.0
+
     state = "RUN" if is_running else "STOP"
 
     return {
         "state": state,
+        "operating_stage": operating_stage,
+        "pump_running": is_running,
         "operating_point": {
             "spm": round(spm, 2),
             "vfd_frequency_hz": round(vfd, 2),

@@ -48,8 +48,23 @@ def predict_rod_floating(latest: Dict[str, Any]) -> Dict[str, Any]:
     7. Rod Floating Prediction
     Horizon: Next 5–30 min | Update freq: Every 10–30 sec
     """
-    min_load = float(latest.get("rod_load_kn", 55.0))
     spm = float(latest.get("spm", 5.5))
+    stage = str(latest.get("operating_stage", "PRODUCTION")).upper()
+    pump_running = latest.get("pump_running")
+
+    # If pump is stopped or in STEAM/SOAK, rod is parked (no floating risk)
+    if spm <= 0.05 or pump_running is False or stage in ("STEAM", "SOAK"):
+        return {
+            "horizon": "Next 5–30 min",
+            "update_frequency": "Every 10–30 sec",
+            "floating_probability": 0.0,
+            "risk_next_10min_pct": 0,
+            "status": "PUMP_STOPPED_CSS_INACTIVE",
+            "summary": f"Pump shut-in ({stage} stage) — 0% floating risk",
+            "recommended_remedy": "None (Planned CSS cycle active)"
+        }
+
+    min_load = float(latest.get("rod_load_kn", 55.0))
     visc = float(latest.get("viscosity_cp", 12000.0))
 
     visc_factor = max(0.0, (visc - 10000.0) / 15000.0)
@@ -77,8 +92,20 @@ def predict_impact_loading(latest: Dict[str, Any], rod_floating: Dict[str, Any])
     8. Impact Loading Prediction
     Horizon: Next 1–15 min | Update freq: Every 5–10 sec
     """
-    float_prob = rod_floating["floating_probability"]
     spm = float(latest.get("spm", 5.5))
+    stage = str(latest.get("operating_stage", "PRODUCTION")).upper()
+    pump_running = latest.get("pump_running")
+
+    if spm <= 0.05 or pump_running is False or stage in ("STEAM", "SOAK"):
+        return {
+            "horizon": "Next 1–15 min",
+            "update_frequency": "Every 5–10 sec",
+            "impact_probability": 0.0,
+            "impact_severity": "MINIMAL_SMOOTH_REVERSAL",
+            "summary": f"Pump shut-in ({stage} stage) — No impact loading"
+        }
+
+    float_prob = rod_floating["floating_probability"]
     stroke = float(latest.get("stroke_length_m", 2.5))
 
     impact_prob = round(min(1.0, float_prob * (spm / 5.0) * (stroke / 2.5)), 3)

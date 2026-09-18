@@ -37,6 +37,13 @@ export class PhysicsEngineService {
     spm: number,
     elapsedSeconds: number,
   ) {
+    if (spm <= 0.05) {
+      return {
+        rodPositionM: 0.0,
+        rodVelocityMps: 0.0,
+        rodAccelerationMps2: 0.0,
+      };
+    }
     const omega = (2 * Math.PI * spm) / 60.0; // rad/s
     const amplitude = strokeLengthM / 2.0;
 
@@ -117,6 +124,7 @@ export class PhysicsEngineService {
    * Calibrated around nominal ~72.4 A at 145.2 kN and 5.5 SPM.
    */
   calculateMotorCurrent(rodLoadKn: number, spm: number): number {
+    if (spm <= 0.05) return 0.0;
     const baseIdleCurrentA = 18.0;
     const currentSlope = 0.375;
     const speedFactor = spm / 5.5;

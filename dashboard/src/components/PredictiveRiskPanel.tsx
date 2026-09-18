@@ -71,11 +71,11 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* 1. Rod Floating (5-30 min) */}
-        <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3.5 flex flex-col justify-between">
+        <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <ArrowDownCircle className="w-3.5 h-3.5 text-amber-400" /> Rod Floating
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-slate-300 font-medium flex items-center gap-1.5">
+                <ArrowDownCircle className="w-4 h-4 text-amber-400" /> Rod Floating
                 <Tooltip
                   title="Rod Floating Risk (Next 5–30 min)"
                   category="PREDICTION"
@@ -83,25 +83,26 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
                 />
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold ${getRiskColor(floating.floating_probability)}`}>
-                {(floating.floating_probability * 100).toFixed(0)}%
+                {(floating.floating_probability * 100).toFixed(0)}% Risk
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-              <span className="px-1.5 py-0.2 rounded bg-slate-800 text-purple-300">Next 5–30 min</span>
+              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-purple-300">Next 5–30 min</span>
               <span>&bull; Upd: 10–30s</span>
             </div>
           </div>
 
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden my-2.5">
+          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden my-1">
             <div
-              className={`h-full transition-all ${
+              className={`h-full transition-all duration-500 ${
                 floating.floating_probability > 0.6 ? 'bg-rose-500' : floating.floating_probability > 0.3 ? 'bg-amber-500' : 'bg-emerald-500'
               }`}
               style={{ width: `${floating.floating_probability * 100}%` }}
             />
           </div>
-          <div className="space-y-1">
-            <p className="text-[11px] text-purple-300 font-mono font-medium truncate">
+
+          <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2.5 space-y-1">
+            <p className="text-[11px] text-purple-300 font-mono font-medium">
               {floating.summary ?? `Risk in 10 min = ${(floating.floating_probability * 100).toFixed(0)}%`}
             </p>
             <span className="text-[10px] text-slate-400 block truncate">Remedy: {floating.recommended_remedy}</span>
@@ -109,11 +110,11 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
         </div>
 
         {/* 2. Impact Loading (1-15 min) */}
-        <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3.5 flex flex-col justify-between">
+        <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <AlertOctagon className="w-3.5 h-3.5 text-rose-400" /> Impact Loading
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-slate-300 font-medium flex items-center gap-1.5">
+                <AlertOctagon className="w-4 h-4 text-rose-400" /> Impact Loading
                 <Tooltip
                   title="Impact Shock Severity (Next 1–15 min)"
                   category="PREDICTION"
@@ -121,25 +122,26 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
                 />
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold ${getRiskColor(impact.impact_probability)}`}>
-                {(impact.impact_probability * 100).toFixed(0)}%
+                {(impact.impact_probability * 100).toFixed(0)}% Shock
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-              <span className="px-1.5 py-0.2 rounded bg-slate-800 text-rose-300">Next 1–15 min</span>
+              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-rose-300">Next 1–15 min</span>
               <span>&bull; Upd: 5–10s</span>
             </div>
           </div>
 
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden my-2.5">
+          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden my-1">
             <div
-              className={`h-full transition-all ${
+              className={`h-full transition-all duration-500 ${
                 impact.impact_probability > 0.6 ? 'bg-rose-500' : impact.impact_probability > 0.3 ? 'bg-amber-500' : 'bg-emerald-500'
               }`}
               style={{ width: `${impact.impact_probability * 100}%` }}
             />
           </div>
-          <div className="space-y-1">
-            <p className="text-[11px] text-rose-300 font-mono font-medium truncate">
+
+          <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2.5 space-y-1">
+            <p className="text-[11px] text-rose-300 font-mono font-medium">
               {impact.summary ?? impact.impact_severity.replace(/_/g, ' ')}
             </p>
             <span className="text-[10px] text-slate-400 block truncate">Status: {impact.impact_severity.replace(/_/g, ' ')}</span>
@@ -147,11 +149,11 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
         </div>
 
         {/* 3. Rod Fatigue Failure (24h - 30 days) */}
-        <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3.5 flex flex-col justify-between">
+        <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <ShieldAlert className="w-3.5 h-3.5 text-sky-400" /> Rod String Fatigue
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-slate-300 font-medium flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4 text-sky-400" /> Rod String Fatigue
                 <Tooltip
                   title="Rod Failure Risk (Next 24 h – 30 days)"
                   category="PREDICTION"
@@ -159,39 +161,40 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
                 />
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold ${getRiskColor(rodFailure.failure_probability)}`}>
-                {(rodFailure.failure_probability * 100).toFixed(0)}%
+                {(rodFailure.failure_probability * 100).toFixed(0)}% Fatigue
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-              <span className="px-1.5 py-0.2 rounded bg-slate-800 text-sky-300">Next 24h–30d</span>
+              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-sky-300">Next 24h–30d</span>
               <span>&bull; Upd: 1–6h</span>
             </div>
           </div>
 
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden my-2.5">
+          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden my-1">
             <div
-              className={`h-full transition-all ${
+              className={`h-full transition-all duration-500 ${
                 rodFailure.failure_probability > 0.6 ? 'bg-rose-500' : rodFailure.failure_probability > 0.3 ? 'bg-amber-500' : 'bg-emerald-500'
               }`}
               style={{ width: `${rodFailure.failure_probability * 100}%` }}
             />
           </div>
-          <div className="space-y-1">
-            <p className="text-[11px] text-sky-300 font-mono font-medium truncate">
+
+          <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2.5 space-y-1">
+            <p className="text-[11px] text-sky-300 font-mono font-medium">
               {rodFailure.summary ?? `Level: ${rodFailure.fatigue_risk_level}`}
             </p>
             <span className="text-[10px] text-slate-400 block truncate">
-              Life: ~{(rodFailure.estimated_cycles_to_failure / 1000).toFixed(0)}k cycles
+              Cycles remaining: ~{(rodFailure.estimated_cycles_to_failure / 1000).toFixed(0)}k
             </span>
           </div>
         </div>
 
         {/* 4. Pump Unsetting Risk (1-24h) */}
-        <div className="bg-slate-950/70 border border-slate-800/80 rounded-lg p-3.5 flex flex-col justify-between">
+        <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Anchor className="w-3.5 h-3.5 text-purple-400" /> Pump Unsetting
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-slate-300 font-medium flex items-center gap-1.5">
+                <Anchor className="w-4 h-4 text-purple-400" /> Pump Unsetting
                 <Tooltip
                   title="Pump Unsetting Probability (Next 1–24 h)"
                   category="PREDICTION"
@@ -199,25 +202,26 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
                 />
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold ${getRiskColor(unsetting.unsetting_probability)}`}>
-                {(unsetting.unsetting_probability * 100).toFixed(0)}%
+                {(unsetting.unsetting_probability * 100).toFixed(0)}% Hold
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-              <span className="px-1.5 py-0.2 rounded bg-slate-800 text-indigo-300">Next 1–24 h</span>
+              <span className="px-1.5 py-0.5 rounded bg-slate-800 text-indigo-300">Next 1–24 h</span>
               <span>&bull; Upd: 5–15m</span>
             </div>
           </div>
 
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden my-2.5">
+          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden my-1">
             <div
-              className={`h-full transition-all ${
+              className={`h-full transition-all duration-500 ${
                 unsetting.unsetting_probability > 0.6 ? 'bg-rose-500' : unsetting.unsetting_probability > 0.3 ? 'bg-amber-500' : 'bg-emerald-500'
               }`}
               style={{ width: `${unsetting.unsetting_probability * 100}%` }}
             />
           </div>
-          <div className="space-y-1">
-            <p className="text-[11px] text-indigo-300 font-mono font-medium truncate">
+
+          <div className="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2.5 space-y-1">
+            <p className="text-[11px] text-indigo-300 font-mono font-medium">
               {unsetting.summary ?? unsetting.status.replace(/_/g, ' ')}
             </p>
             <span className="text-[10px] text-slate-400 block truncate">Action: {unsetting.recommended_action}</span>

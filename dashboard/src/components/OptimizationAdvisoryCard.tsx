@@ -71,18 +71,22 @@ const defaultItems: OptimizationAdvisoryItem[] = [
 export const OptimizationAdvisoryCard: React.FC<OptimizationAdvisoryCardProps> = ({ items = defaultItems }) => {
   const advisoryList = items && items.length > 0 ? items : defaultItems;
 
+  // Split into Surface Machinery vs CSS Thermal Strategy
+  const surfaceItems = advisoryList.slice(0, 4);
+  const thermalItems = advisoryList.slice(4);
+
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg relative overflow-hidden">
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg relative overflow-hidden space-y-4">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-amber-950/80 border border-amber-800 text-amber-400 tracking-wider">
-            CONTROL &bull; DECISION INTERVALS
+            CONTROL &bull; DECISION CADENCE
           </span>
           <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-1.5">
             <Sliders className="w-4 h-4 text-amber-400" />
-            Field Optimization &amp; Decision Cadence
+            Field Optimization &amp; Recommended Decision Intervals
           </h3>
           <Tooltip
             title="Optimization Decision Intervals"
@@ -93,37 +97,88 @@ export const OptimizationAdvisoryCard: React.FC<OptimizationAdvisoryCardProps> =
         <span className="text-[10px] text-slate-400 font-mono">AUTOMATED ADVISORY ENGINE</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-        {advisoryList.map((item, idx) => (
-          <div
-            key={idx}
-            className="bg-slate-950/70 border border-slate-800/80 hover:border-slate-700/80 rounded-lg p-3 flex flex-col justify-between transition"
-          >
-            <div>
-              <div className="flex items-start justify-between gap-1 mb-1.5">
-                <span className="text-xs font-semibold text-slate-200 truncate">{item.parameter}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded font-mono bg-amber-500/10 border border-amber-500/20 text-amber-400 whitespace-nowrap flex items-center gap-1">
-                  <Clock className="w-2.5 h-2.5" />
-                  {item.decision_interval}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-[11px] mb-2 font-mono">
-                <span className="text-slate-500">Current:</span>
-                <span className="text-slate-300 font-medium">{item.current_setting}</span>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-slate-800/70 space-y-1">
-              <div className="flex items-start gap-1 text-[11px] text-emerald-400 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-emerald-400" />
-                <span className="line-clamp-2">{item.recommended_action}</span>
-              </div>
-              <p className="text-[10px] text-slate-400 line-clamp-2 italic pt-0.5 pl-4">
-                {item.rationale}
-              </p>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 text-xs">
+        {/* Group 1: Surface Machinery & Pumping Controls */}
+        <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+            <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+              ⚙️ Surface Machinery &amp; Lift Controls
+            </span>
+            <span className="text-[10px] text-slate-500 font-mono">SHIFT / TACTICAL</span>
           </div>
-        ))}
+
+          <div className="space-y-2.5">
+            {surfaceItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-slate-900/90 border border-slate-800 rounded-lg p-3 space-y-1.5 hover:border-slate-700 transition"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-slate-200 text-xs">{item.parameter}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-slate-400">
+                      Now: <strong className="text-slate-200">{item.current_setting}</strong>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded font-mono bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center gap-1">
+                      <Clock className="w-2.5 h-2.5" />
+                      {item.decision_interval}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-1.5 pt-1 text-emerald-400">
+                  <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-emerald-400" />
+                  <span className="font-medium text-[11px]">{item.recommended_action}</span>
+                </div>
+
+                <p className="text-[11px] text-slate-400 pl-5 italic">
+                  {item.rationale}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Group 2: CSS Thermal & Reservoir Cycle Strategy */}
+        <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+            <span className="text-xs font-bold text-orange-400 flex items-center gap-1.5">
+              🔥 CSS Thermal &amp; Reservoir Cycle Optimization
+            </span>
+            <span className="text-[10px] text-slate-500 font-mono">CYCLE / STRATEGIC</span>
+          </div>
+
+          <div className="space-y-2.5">
+            {thermalItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-slate-900/90 border border-slate-800 rounded-lg p-3 space-y-1.5 hover:border-slate-700 transition"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-slate-200 text-xs">{item.parameter}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-slate-400">
+                      Now: <strong className="text-slate-200">{item.current_setting}</strong>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded font-mono bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center gap-1">
+                      <Clock className="w-2.5 h-2.5" />
+                      {item.decision_interval}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-1.5 pt-1 text-emerald-400">
+                  <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-emerald-400" />
+                  <span className="font-medium text-[11px]">{item.recommended_action}</span>
+                </div>
+
+                <p className="text-[11px] text-slate-400 pl-5 italic">
+                  {item.rationale}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
