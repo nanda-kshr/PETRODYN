@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Thermometer, Droplets, Calendar } from 'lucide-react';
+import { Thermometer, Droplets, Calendar, Flame, Waves } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { AnalyticsData, PredictionsData, TelemetryRecord } from '@/types/telemetry';
 import { Tooltip } from './Tooltip';
 
@@ -16,40 +17,33 @@ export const ThermalViscosityCard: React.FC<ThermalViscosityCardProps> = ({
   predictions,
   latest,
 }) => {
-  const currentTemp = latest?.temperature_c ?? 50.0;
-  const currentVisc = latest?.viscosity_cp ?? 12000;
-  const coolingRate = analytics?.cooling_rate?.cooling_rate_c_per_day ?? 0.45;
-  const viscosityTrend = analytics?.viscosity_trend?.viscosity_increase_rate_cp_per_day ?? 280;
+  const currentTemp = latest?.temperature_c ?? null;
+  const currentVisc = latest?.viscosity_cp ?? null;
+  const coolingRate = analytics?.cooling_rate?.cooling_rate_c_per_day ?? null;
+  const viscosityTrend = analytics?.viscosity_trend?.viscosity_increase_rate_cp_per_day ?? null;
 
-  const tempPred = predictions?.reservoir_temperature ?? {
-    current_temperature_c: 50.0,
-    forecast_6h_c: 49.8,
-    forecast_24h_c: 48.9,
-    forecast_72h_c: 48.2,
-    summary: 'Temperature tomorrow = 48.9°C',
-  };
-
-  const viscPred = predictions?.oil_viscosity ?? {
-    current_viscosity_cp: 12000,
-    forecast_6h_cp: 12300,
-    forecast_24h_cp: 13100,
-    forecast_72h_cp: 14200,
-    summary: 'Viscosity tomorrow = 13,100 cP',
-  };
-
-  const resteamWindow = predictions?.reservoir_cooling?.recommended_css_resteam_window_days ?? 19;
+  const tempPred = predictions?.reservoir_temperature;
+  const viscPred = predictions?.oil_viscosity;
+  const resteamWindow = predictions?.reservoir_cooling?.recommended_css_resteam_window_days ?? null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col justify-between relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500" />
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+      className="glass-panel rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-slate-700/80 transition-all"
+    >
+      {/* Top accent */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 via-purple-500 to-indigo-500 shadow-sm" />
 
-      <div className="flex items-center justify-between mb-3">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-purple-50 border border-purple-200 text-purple-600 tracking-wider">
+          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-purple-500/10 border border-purple-500/30 text-purple-300 tracking-wider">
             HYBRID &bull; STATE &amp; SHIFT FORECAST
           </span>
-          <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
-            <Thermometer className="w-4 h-4 text-rose-600" />
+          <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+            <Thermometer className="w-4 h-4 text-rose-400" />
             Thermal Decay &amp; Viscosity Dynamics
           </h3>
           <Tooltip
@@ -58,9 +52,9 @@ export const ThermalViscosityCard: React.FC<ThermalViscosityCardProps> = ({
             content="Combines live bottomhole analytics with 6–72h conductive decay and Arrhenius viscosity forecasting. Updated every 15–60 min."
           />
         </div>
-        <div className="flex items-center gap-1 text-[11px] text-gray-500 font-mono">
-          <Calendar className="w-3.5 h-3.5 text-sky-600" />
-          Re-steam in: ~{resteamWindow} days
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono px-3 py-1 rounded-xl bg-slate-900/80 border border-slate-800">
+          <Calendar className="w-3.5 h-3.5 text-sky-400" />
+          Re-steam in: <strong className="text-sky-300">{resteamWindow !== null ? `~${resteamWindow} days` : '--'}</strong>
           <Tooltip
             title="Recommended Re-Steam Window"
             category="PREDICTION"
@@ -69,93 +63,113 @@ export const ThermalViscosityCard: React.FC<ThermalViscosityCardProps> = ({
         </div>
       </div>
 
+      {/* 2 Primary Forecast Blocks */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Temperature Box */}
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3.5 flex flex-col justify-between">
+        <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 rounded-full blur-2xl pointer-events-none" />
+          
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-500 flex items-center gap-1">
-                <Thermometer className="w-3.5 h-3.5 text-rose-600" /> Temperature
-                <span className="text-[9px] px-1 rounded bg-sky-50 text-sky-600 border border-sky-200">NOW</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-slate-300 flex items-center gap-1.5 font-medium">
+                <Flame className="w-3.5 h-3.5 text-rose-400" /> Bottomhole Temperature
+                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30 font-mono">NOW</span>
               </span>
-              <span className="text-[10px] text-gray-400 font-mono flex items-center gap-1">
-                Decay: {coolingRate}&deg;C/day
+              <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                Decay: <strong className="text-rose-400">{coolingRate !== null ? `${coolingRate}°C/day` : '--'}</strong>
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="text-2xl font-bold font-mono text-rose-600">
-                {currentTemp}&deg;C
+
+            <div className="flex items-baseline justify-between mt-1">
+              <div className="text-3xl font-black font-mono text-rose-400 tracking-tight">
+                {currentTemp !== null ? `${currentTemp.toFixed(1)}°C` : '--'}
               </div>
-              <div className="flex items-center gap-1 text-[10px] text-gray-500 font-mono">
-                <span className="px-1.5 py-0.2 rounded bg-gray-100 text-rose-700">Next 6–72 h</span>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono">
+                <span className="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-300 border border-rose-500/20">6h - 72h Horizon</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-2 border-t border-gray-200 text-[10px] font-mono mt-2">
-            <div className="grid grid-cols-3 gap-1 text-center">
-              <div>
-                <span className="text-gray-400 block">+6h</span>
-                <span className="text-gray-700 font-semibold">{tempPred.forecast_6h_c ?? currentTemp}&deg;C</span>
+          <div className="space-y-2 pt-3 border-t border-slate-800/80 text-[10px] font-mono mt-3">
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                <span className="text-slate-400 block text-[9px]">+6h</span>
+                <span className="text-slate-200 font-bold text-xs">
+                  {tempPred?.forecast_6h_c !== undefined ? `${tempPred.forecast_6h_c}°C` : '--'}
+                </span>
               </div>
-              <div>
-                <span className="text-gray-400 block">+24h</span>
-                <span className="text-rose-700 font-semibold">{tempPred.forecast_24h_c ?? (currentTemp - 0.9)}&deg;C</span>
+              <div className="bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                <span className="text-slate-400 block text-[9px]">+24h</span>
+                <span className="text-rose-400 font-bold text-xs">
+                  {tempPred?.forecast_24h_c !== undefined ? `${tempPred.forecast_24h_c}°C` : '--'}
+                </span>
               </div>
-              <div>
-                <span className="text-gray-400 block">+72h</span>
-                <span className="text-gray-500">{tempPred.forecast_72h_c ?? (currentTemp - 1.8)}&deg;C</span>
+              <div className="bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                <span className="text-slate-400 block text-[9px]">+72h</span>
+                <span className="text-slate-400 font-bold text-xs">
+                  {tempPred?.forecast_72h_c !== undefined ? `${tempPred.forecast_72h_c}°C` : '--'}
+                </span>
               </div>
             </div>
-            <p className="text-[11px] text-rose-700 font-mono text-center font-medium pt-1 truncate">
-              {tempPred.summary ?? `Temperature tomorrow = ${tempPred.forecast_24h_c}&deg;C`}
+            <p className="text-[11px] text-rose-300 font-mono text-center font-medium pt-1 truncate bg-rose-500/5 py-1 px-2 rounded-md border border-rose-500/10">
+              {tempPred?.summary ?? (tempPred ? `Temperature tomorrow = ${tempPred.forecast_24h_c}°C` : 'Awaiting thermal model forecast...')}
             </p>
           </div>
         </div>
 
         {/* Viscosity Box */}
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3.5 flex flex-col justify-between">
+        <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
+
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-500 flex items-center gap-1">
-                <Droplets className="w-3.5 h-3.5 text-purple-600" /> Dynamic Viscosity
-                <span className="text-[9px] px-1 rounded bg-sky-50 text-sky-600 border border-sky-200">NOW</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs text-slate-300 flex items-center gap-1.5 font-medium">
+                <Droplets className="w-3.5 h-3.5 text-purple-400" /> Dynamic Viscosity
+                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30 font-mono">NOW</span>
               </span>
-              <span className="text-[10px] text-gray-400 font-mono flex items-center gap-1">
-                +{viscosityTrend} cP/day
+              <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                Trend: <strong className="text-purple-400">{viscosityTrend !== null ? `+${viscosityTrend} cP/d` : '--'}</strong>
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="text-2xl font-bold font-mono text-purple-600">
-                {currentVisc.toLocaleString()} <span className="text-xs font-normal text-gray-400">cP</span>
+
+            <div className="flex items-baseline justify-between mt-1">
+              <div className="text-3xl font-black font-mono text-purple-400 tracking-tight">
+                {currentVisc !== null ? Math.round(currentVisc).toLocaleString() : '--'}{' '}
+                <span className="text-xs font-normal text-slate-400">cP</span>
               </div>
-              <div className="flex items-center gap-1 text-[10px] text-gray-500 font-mono">
-                <span className="px-1.5 py-0.2 rounded bg-gray-100 text-purple-700">Next 6–72 h</span>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono">
+                <span className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">6h - 72h Horizon</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-2 border-t border-gray-200 text-[10px] font-mono mt-2">
-            <div className="grid grid-cols-3 gap-1 text-center">
-              <div>
-                <span className="text-gray-400 block">+6h</span>
-                <span className="text-gray-700 font-semibold">{Math.round(viscPred.forecast_6h_cp ?? currentVisc * 1.02)}</span>
+          <div className="space-y-2 pt-3 border-t border-slate-800/80 text-[10px] font-mono mt-3">
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                <span className="text-slate-400 block text-[9px]">+6h</span>
+                <span className="text-slate-200 font-bold text-xs">
+                  {viscPred?.forecast_6h_cp !== undefined ? Math.round(viscPred.forecast_6h_cp).toLocaleString() : '--'}
+                </span>
               </div>
-              <div>
-                <span className="text-gray-400 block">+24h</span>
-                <span className="text-purple-700 font-semibold">{Math.round(viscPred.forecast_24h_cp ?? currentVisc * 1.08)}</span>
+              <div className="bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                <span className="text-slate-400 block text-[9px]">+24h</span>
+                <span className="text-purple-400 font-bold text-xs">
+                  {viscPred?.forecast_24h_cp !== undefined ? Math.round(viscPred.forecast_24h_cp).toLocaleString() : '--'}
+                </span>
               </div>
-              <div>
-                <span className="text-gray-400 block">+72h</span>
-                <span className="text-gray-500">{Math.round(viscPred.forecast_72h_cp ?? currentVisc * 1.18)}</span>
+              <div className="bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                <span className="text-slate-400 block text-[9px]">+72h</span>
+                <span className="text-slate-400 font-bold text-xs">
+                  {viscPred?.forecast_72h_cp !== undefined ? Math.round(viscPred.forecast_72h_cp).toLocaleString() : '--'}
+                </span>
               </div>
             </div>
-            <p className="text-[11px] text-purple-700 font-mono text-center font-medium pt-1 truncate">
-              {viscPred.summary ?? `Viscosity tomorrow = ${Math.round(viscPred.forecast_24h_cp ?? currentVisc * 1.08).toLocaleString()} cP`}
+            <p className="text-[11px] text-purple-300 font-mono text-center font-medium pt-1 truncate bg-purple-500/5 py-1 px-2 rounded-md border border-purple-500/10">
+              {viscPred?.summary ?? (viscPred ? `Viscosity tomorrow = ${Math.round(viscPred.forecast_24h_cp).toLocaleString()} cP` : 'Awaiting viscosity model forecast...')}
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

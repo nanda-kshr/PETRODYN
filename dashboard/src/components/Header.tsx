@@ -1,7 +1,23 @@
 'use client';
 
-import React from 'react';
-import { Activity, Wifi, WifiOff, RefreshCw, Flame, Hourglass, Play } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Activity,
+  Wifi,
+  WifiOff,
+  RefreshCw,
+  Flame,
+  Hourglass,
+  Play,
+  Cpu,
+  Zap,
+  Droplets,
+  Thermometer,
+  Bell,
+  User,
+  RotateCcw,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TelemetryRecord } from '@/types/telemetry';
 
 interface HeaderProps {
@@ -10,6 +26,7 @@ interface HeaderProps {
   latest: TelemetryRecord | null;
   lastUpdated: Date | null;
   onRefresh: () => void;
+  onReplayIntro?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,118 +35,217 @@ export const Header: React.FC<HeaderProps> = ({
   latest,
   lastUpdated,
   onRefresh,
+  onReplayIntro,
 }) => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    onRefresh();
+    setTimeout(() => setIsRefreshing(false), 800);
+  };
+
+  const notifications = [
+    { time: '1m ago', msg: 'Baghewala Well BW-001: Viscosity stable @ 10,240 cP', type: 'info' },
+    { time: '3m ago', msg: 'CSS Cycle Stage: Production (Puff) active', type: 'success' },
+    { time: '5m ago', msg: 'Goodman Fatigue: Cycles to failure > 450k', type: 'info' },
+  ];
+
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-sky-500/10 border border-sky-500/20 rounded-lg text-sky-600">
-          <Activity className="w-6 h-6" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
-            THERMO-LIFT <span className="text-xs px-2 py-0.5 rounded bg-sky-50 border border-sky-200 text-sky-700 font-mono">DIGITAL TWIN</span>
-          </h1>
-          <p className="text-xs text-gray-500">
-            Baghewala Field &bull; Wellbore &bull; Sucker Rod Pump &bull; Jodhpur Sandstone
-          </p>
-        </div>
-      </div>
-
-      {/* Quick Live Telemetry Bar */}
-      {latest && (
-        <div className="hidden lg:flex items-center gap-4 bg-gray-50 px-4 py-1.5 rounded-lg border border-gray-200 text-xs">
+    <header className="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 md:px-6 py-3 backdrop-blur-xl">
+      <div className="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-4">
+        {/* Brand & Subtitle */}
+        <div className="flex items-center gap-3.5">
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2.5 bg-gradient-to-br from-sky-500/20 to-cyan-500/10 border border-sky-400/30 rounded-xl text-sky-400 shadow-lg shadow-sky-500/10"
+          >
+            <Cpu className="w-5 h-5 md:w-6 md:h-6 animate-pulse" />
+          </motion.div>
           <div>
-            <span className="text-gray-400 block text-[10px]">CSS STAGE</span>
-            <span className={`font-bold ${
-              latest.operating_stage === 'STEAM'
-                ? 'text-rose-600'
-                : latest.operating_stage === 'SOAK'
-                ? 'text-amber-600'
-                : 'text-emerald-600'
-            }`}>
-              {latest.operating_stage || (latest.spm <= 0.05 ? 'STOPPED' : 'PROD')}
-            </span>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base md:text-xl font-black tracking-tight text-white flex items-center gap-2 font-mono">
+                <span className="shimmer-text">THERMO-LIFT</span>
+              </h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold bg-sky-500/10 border border-sky-500/30 text-sky-300 tracking-wider">
+                DIGITAL TWIN
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-medium font-mono hidden sm:block">
+              Baghewala Field, Rajasthan &bull; Jodhpur Sandstone &bull; Heavy Oil CSS-SRP
+            </p>
           </div>
-          <div className="h-6 w-px bg-gray-200" />
-          <div>
-            <span className="text-gray-400 block text-[10px]">SPM</span>
-            <span className="font-semibold text-sky-600">
-              {latest.spm <= 0.05 ? '0.0 (OFF)' : latest.spm}
-            </span>
-          </div>
-          <div className="h-6 w-px bg-gray-200" />
-          <div>
-            <span className="text-gray-400 block text-[10px]">ROD LOAD</span>
-            <span className="font-semibold text-amber-600">{latest.rod_load_kn} kN</span>
-          </div>
-          <div className="h-6 w-px bg-gray-200" />
-          <div>
-            <span className="text-gray-400 block text-[10px]">PRODUCTION</span>
-            <span className="font-semibold text-emerald-600">{latest.production_bopd} BOPD</span>
-          </div>
-          <div className="h-6 w-px bg-gray-200" />
-          <div>
-            <span className="text-gray-400 block text-[10px]">TEMP</span>
-            <span className="font-semibold text-rose-600">{latest.temperature_c}°C</span>
-          </div>
-          <div className="h-6 w-px bg-gray-200" />
-          <div>
-            <span className="text-gray-400 block text-[10px]">VISCOSITY</span>
-            <span className="font-semibold text-purple-600">{latest.viscosity_cp} cP</span>
-          </div>
-        </div>
-      )}
-
-      {/* Connection status and sync indicator */}
-      <div className="flex items-center gap-3 text-xs">
-        {latest?.operating_stage === 'STEAM' && (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 border border-rose-200 text-rose-700 animate-pulse flex items-center gap-1">
-            <Flame className="w-3 h-3" /> STEAM INJECTION
-          </span>
-        )}
-        {latest?.operating_stage === 'SOAK' && (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-700 animate-pulse flex items-center gap-1">
-            <Hourglass className="w-3 h-3" /> SOAKING
-          </span>
-        )}
-        {latest?.operating_stage === 'PRODUCTION' && (
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center gap-1">
-            <Play className="w-3 h-3 fill-current" /> PRODUCTION
-          </span>
-        )}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-200">
-          <span className="font-mono text-gray-700 font-medium">WELL: {wellId}</span>
         </div>
 
-        <div
-          className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-medium transition-colors ${
-            isConnected
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
-              : 'bg-rose-50 border-rose-200 text-rose-600'
-          }`}
-        >
-          {isConnected ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <Wifi className="w-3.5 h-3.5" />
-              <span>WS LIVE</span>
-            </>
-          ) : (
-            <>
-              <span className="w-2 h-2 rounded-full bg-rose-400" />
-              <WifiOff className="w-3.5 h-3.5" />
-              <span>OFFLINE</span>
-            </>
+        {/* Live Telemetry Ticker Strip */}
+        <AnimatePresence>
+          {latest && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="hidden 2xl:flex items-center gap-3 glass-panel-sub px-4 py-1.5 rounded-xl border border-slate-800 text-xs shadow-inner"
+            >
+              {/* CSS Stage */}
+              <div className="flex items-center gap-2 px-1">
+                <span className="text-slate-400 text-[10px] font-mono">STAGE</span>
+                <span
+                  className={`font-bold font-mono px-2 py-0.5 rounded-full text-[10px] border ${
+                    latest.operating_stage === 'STEAM'
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse'
+                      : latest.operating_stage === 'SOAK'
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
+                      : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                  }`}
+                >
+                  {latest.operating_stage || (latest.spm <= 0.05 ? 'STOPPED' : 'PROD')}
+                </span>
+              </div>
+
+              <div className="h-5 w-px bg-slate-800" />
+
+              {/* SPM */}
+              <div className="flex items-center gap-1.5">
+                <Activity className="w-3.5 h-3.5 text-sky-400" />
+                <div>
+                  <span className="text-slate-400 block text-[9px] font-mono">SPM</span>
+                  <span className="font-bold font-mono text-sky-300">
+                    {latest.spm <= 0.05 ? '0.0 (OFF)' : latest.spm.toFixed(1)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="h-5 w-px bg-slate-800" />
+
+              {/* ROD LOAD */}
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                <div>
+                  <span className="text-slate-400 block text-[9px] font-mono">ROD LOAD</span>
+                  <span className="font-bold font-mono text-amber-300">{latest.rod_load_kn.toFixed(1)} kN</span>
+                </div>
+              </div>
+
+              <div className="h-5 w-px bg-slate-800" />
+
+              {/* PRODUCTION */}
+              <div className="flex items-center gap-1.5">
+                <Droplets className="w-3.5 h-3.5 text-emerald-400" />
+                <div>
+                  <span className="text-slate-400 block text-[9px] font-mono">BOPD</span>
+                  <span className="font-bold font-mono text-emerald-300">{latest.production_bopd.toFixed(1)}</span>
+                </div>
+              </div>
+
+              <div className="h-5 w-px bg-slate-800" />
+
+              {/* TEMPERATURE */}
+              <div className="flex items-center gap-1.5">
+                <Thermometer className="w-3.5 h-3.5 text-rose-400" />
+                <div>
+                  <span className="text-slate-400 block text-[9px] font-mono">TEMP</span>
+                  <span className="font-bold font-mono text-rose-300">{latest.temperature_c.toFixed(1)}°C</span>
+                </div>
+              </div>
+
+              <div className="h-5 w-px bg-slate-800" />
+
+              {/* VISCOSITY */}
+              <div>
+                <span className="text-slate-400 block text-[9px] font-mono">VISCOSITY</span>
+                <span className="font-bold font-mono text-purple-300">
+                  {Math.round(latest.viscosity_cp).toLocaleString()} cP
+                </span>
+              </div>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
-        <button
-          onClick={onRefresh}
-          className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 transition"
-          title="Refresh AI predictions"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-        </button>
+        {/* Status Indicators & Action Controls */}
+        <div className="flex items-center gap-2.5 text-xs">
+          {/* Well ID Badge */}
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 font-mono text-xs">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/50" />
+            <span className="font-semibold">WELL: {wellId}</span>
+          </div>
+
+          {/* Live WS Status Pill with Multi-Ring Radar Pulse */}
+          <div
+            className={`relative flex items-center gap-2 px-3 py-1 rounded-xl border text-[11px] font-mono font-medium transition-colors ${
+              isConnected
+                ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+            }`}
+          >
+            {isConnected ? (
+              <>
+                <div className="relative flex items-center justify-center w-2.5 h-2.5">
+                  <span className="absolute w-full h-full rounded-full bg-emerald-400 animate-radar" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                </div>
+                <Wifi className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="hidden sm:inline">WS LIVE</span>
+              </>
+            ) : (
+              <>
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+                <WifiOff className="w-3.5 h-3.5 text-rose-400" />
+                <span className="hidden sm:inline">OFFLINE</span>
+              </>
+            )}
+          </div>
+
+          {/* Notifications Trigger */}
+          <div className="relative">
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition relative"
+              title="Notifications & Alerts"
+            >
+              <Bell className="w-3.5 h-3.5" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+            </button>
+
+            {showNotifications && (
+              <div className="absolute right-0 top-full mt-2 w-72 glass-panel p-3 rounded-2xl border border-slate-700 shadow-2xl z-50 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-1.5 text-xs font-bold text-white font-mono">
+                  <span>SYSTEM ALERTS</span>
+                  <span className="text-[10px] text-sky-400">3 ACTIVE</span>
+                </div>
+                <div className="space-y-1.5">
+                  {notifications.map((n, i) => (
+                    <div key={i} className="p-2 bg-slate-900/80 rounded-xl border border-slate-800 text-[11px] space-y-0.5">
+                      <div className="flex justify-between text-[9px] text-slate-400 font-mono">
+                        <span>BAGHEWALA SCADA</span>
+                        <span>{n.time}</span>
+                      </div>
+                      <p className="text-slate-200 leading-tight">{n.msg}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Refresh Action with Spin Animation */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleRefresh}
+            className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition shadow-sm"
+            title="Refresh AI predictions & Telemetry"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-sky-400' : ''}`} />
+          </motion.button>
+
+          {/* Operator Profile Avatar */}
+          <div className="hidden sm:flex items-center gap-2 pl-1 border-l border-slate-800">
+            <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 border border-sky-400/40 flex items-center justify-center text-white shadow-sm font-mono text-xs font-bold">
+              <User className="w-4 h-4 text-sky-200" />
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );
