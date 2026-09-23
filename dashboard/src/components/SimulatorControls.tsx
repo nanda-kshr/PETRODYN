@@ -19,7 +19,7 @@ import {
   Settings,
   Droplets,
   CheckCircle2,
-  AlertTriangle,
+  Terminal,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TelemetryRecord } from '@/types/telemetry';
@@ -50,7 +50,7 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        setLastMessage(`✓ Set ${parameter} = ${value}`);
+        setLastMessage(`✓ SETPOINT DISPATCH: ${parameter.toUpperCase()} = ${value}`);
         if (onParameterChanged) onParameterChanged();
       } else {
         setLastMessage(`Error: ${data.message || 'Failed'}`);
@@ -135,208 +135,188 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
   const isHotFlush = activeStage === 'PRODUCTION' && temp >= 70;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="glass-panel rounded-xl p-5 space-y-5 relative overflow-hidden"
-    >
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-500/70" />
-
-      {/* Top Header & Simulation Loop Toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
+    <div className="bg-[#0D1219] border border-[#1E293B] rounded-lg p-4 space-y-4 relative overflow-hidden shadow-xl">
+      {/* Top Cockpit Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#1E293B]">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 shadow-sm">
-            <Sliders className="w-5 h-5" />
+          <div className="flex items-center justify-center w-8 h-8 rounded bg-[#111821] border border-[#1E293B] text-emerald-400">
+            <Sliders className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              Simulator Runtime Control Cockpit
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-                PORT 3001
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-mono font-bold text-slate-100 uppercase tracking-wider">
+                SIMULATION &amp; EXPERIMENTAL SETPOINT COCKPIT
+              </h3>
+              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold">
+                PHYSICS ENGINE // PORT 3001
               </span>
-            </h3>
-            <p className="text-[11px] text-slate-400">
-              Interactive setpoint dispatch to well physics simulator &amp; thermal decay model
+            </div>
+            <p className="text-[10px] font-mono text-slate-400">
+              DISPATCH REAL-TIME DYNAMIC SETPOINTS TO WELL SYSTEM SIMULATOR
             </p>
           </div>
         </div>
 
-        {/* Status Message & Loop Buttons */}
-        <div className="flex items-center gap-2 text-xs">
+        {/* Runtime Loop State & Action Buttons */}
+        <div className="flex items-center gap-2 text-xs font-mono">
           <AnimatePresence>
             {lastMessage && (
               <motion.span
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="font-mono text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-xl text-[11px] flex items-center gap-1 shadow-sm"
+                className="text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded text-[10px] flex items-center gap-1"
               >
-                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                <Terminal className="w-3 h-3 text-emerald-400" />
                 {lastMessage}
               </motion.span>
             )}
           </AnimatePresence>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            type="button"
             onClick={() => controlLoop('start')}
             disabled={loadingParam === 'loop_start'}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-medium transition shadow-sm font-mono"
+            className="flex items-center gap-1 px-3 py-1 rounded bg-[#111821] hover:bg-emerald-500/20 border border-[#1E293B] hover:border-emerald-500/40 text-emerald-300 font-semibold transition cursor-pointer"
           >
-            <Play className="w-3.5 h-3.5 fill-current" /> RESUME
-          </motion.button>
+            <Play className="w-3 h-3 fill-current" /> RESUME
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            type="button"
             onClick={() => controlLoop('stop')}
             disabled={loadingParam === 'loop_stop'}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-medium transition shadow-sm font-mono"
+            className="flex items-center gap-1 px-3 py-1 rounded bg-[#111821] hover:bg-rose-500/20 border border-[#1E293B] hover:border-rose-500/40 text-rose-300 font-semibold transition cursor-pointer"
           >
-            <Square className="w-3.5 h-3.5 fill-current" /> PAUSE
-          </motion.button>
+            <Square className="w-3 h-3 fill-current" /> PAUSE
+          </button>
         </div>
       </div>
 
-      {/* CYCLIC STEAM STIMULATION (CSS) LIFECYCLE CONTROLLER */}
-      <div className="glass-panel-sub border border-amber-500/30 rounded-xl p-4 space-y-3 relative overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 tracking-wider">
-              CSS LIFECYCLE CONTROLLER
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono">
-            <span className="text-slate-400 font-medium">Stage:</span>
+      {/* Cyclic Steam Stimulation (CSS) Stage Transitions */}
+      <div className="bg-[#111821] border border-[#1E293B] rounded p-3.5 space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1E293B] pb-2">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 tracking-wider">
+            CYCLIC STEAM STIMULATION (CSS) LIFECYCLE DISPATCH
+          </span>
+          <div className="flex items-center gap-2 text-[10px] font-mono">
+            <span className="text-slate-400">ACTIVE STAGE:</span>
             {isInjecting && (
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 border border-rose-500/40 text-rose-300 animate-pulse flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded font-bold bg-rose-500/20 border border-rose-500/40 text-rose-300 flex items-center gap-1">
                 <Flame className="w-3 h-3 text-rose-400" /> 1. STEAM INJECTION (HUFF)
               </span>
             )}
             {isSoaking && (
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 animate-pulse flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded font-bold bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center gap-1">
                 <Hourglass className="w-3 h-3 text-amber-400" /> 2. THERMAL SOAKING
               </span>
             )}
             {isHotFlush && (
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded font-bold bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 flex items-center gap-1">
                 <Zap className="w-3 h-3 text-emerald-400" /> 3. HOT FLUSH (PUFF)
               </span>
             )}
             {!isInjecting && !isSoaking && !isHotFlush && (
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-800 border border-slate-700 text-slate-300">
-                {isPumpStopped ? 'Pump Stopped / Shut-In' : 'Steady Production'}
+              <span className="px-2 py-0.5 rounded bg-[#080B10] border border-[#1E293B] text-slate-300">
+                {isPumpStopped ? 'PUMP STOPPED' : 'STEADY PRODUCTION'}
               </span>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {/* Stage 1: Inject Steam */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+          <button
+            type="button"
             onClick={() => applyCssStage('STEAM')}
             disabled={loadingParam === 'css_STEAM'}
-            className={`flex items-center justify-between p-3 rounded-xl border transition ${
+            className={`flex items-center justify-between p-2.5 rounded border transition font-mono ${
               isInjecting
-                ? 'bg-rose-500/20 border-rose-500/60 ring-2 ring-rose-500/40 text-white shadow-lg glow-rose'
-                : 'bg-slate-900/80 border-slate-800 hover:border-rose-500/40 text-slate-200'
+                ? 'bg-rose-500/20 border-rose-500/60 text-white'
+                : 'bg-[#080B10] border-[#1E293B] hover:border-rose-500/40 text-slate-200'
             }`}
           >
-            <span className="text-xs font-bold text-rose-400 flex items-center gap-1.5 font-mono">
-              <Flame className="w-4 h-4" /> 1. Steam Injection
+            <span className="text-xs font-bold text-rose-400 flex items-center gap-1.5">
+              <Flame className="w-3.5 h-3.5" /> 1. Steam Injection
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-rose-500/10 border border-rose-500/30 text-rose-300 font-semibold">
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300">
               PUMP OFF
             </span>
-          </motion.button>
+          </button>
 
-          {/* Stage 2: Soak Well */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
+            type="button"
             onClick={() => applyCssStage('SOAK')}
             disabled={loadingParam === 'css_SOAK'}
-            className={`flex items-center justify-between p-3 rounded-xl border transition ${
+            className={`flex items-center justify-between p-2.5 rounded border transition font-mono ${
               isSoaking
-                ? 'bg-amber-500/20 border-amber-500/60 ring-2 ring-amber-500/40 text-white shadow-lg glow-amber'
-                : 'bg-slate-900/80 border-slate-800 hover:border-amber-500/40 text-slate-200'
+                ? 'bg-amber-500/20 border-amber-500/60 text-white'
+                : 'bg-[#080B10] border-[#1E293B] hover:border-amber-500/40 text-slate-200'
             }`}
           >
-            <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5 font-mono">
-              <Hourglass className="w-4 h-4" /> 2. Soak (Shut-In)
+            <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+              <Hourglass className="w-3.5 h-3.5" /> 2. Soak (Shut-In)
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold">
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">
               PUMP OFF
             </span>
-          </motion.button>
+          </button>
 
-          {/* Stage 3: Restart Production */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
+            type="button"
             onClick={() => applyCssStage('PRODUCTION')}
             disabled={loadingParam === 'css_PRODUCTION'}
-            className={`flex items-center justify-between p-3 rounded-xl border transition ${
+            className={`flex items-center justify-between p-2.5 rounded border transition font-mono ${
               isHotFlush
-                ? 'bg-emerald-500/20 border-emerald-500/60 ring-2 ring-emerald-500/40 text-white shadow-lg glow-emerald'
-                : 'bg-slate-900/80 border-slate-800 hover:border-emerald-500/40 text-slate-200'
+                ? 'bg-emerald-500/20 border-emerald-500/60 text-white'
+                : 'bg-[#080B10] border-[#1E293B] hover:border-emerald-500/40 text-slate-200'
             }`}
           >
-            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 font-mono">
-              <Play className="w-4 h-4 fill-current" /> 3. Production (Puff)
+            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+              <Play className="w-3.5 h-3.5 fill-current" /> 3. Production (Puff)
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-semibold">
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
               PUMP ON
             </span>
-          </motion.button>
+          </button>
         </div>
       </div>
 
-      {/* Quick Scenarios */}
-      <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5">
-        <span className="text-slate-400 block text-[11px] mb-2 font-mono font-semibold flex items-center gap-1.5 uppercase">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" /> One-Click Digital Twin Scenarios:
+      {/* Preset Scenarios Strip */}
+      <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
+        <span className="text-slate-400 block text-[10px] font-mono font-semibold uppercase flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400" /> ONE-CLICK DIGITAL TWIN EXPERIMENTAL SCENARIOS:
         </span>
-        <div className="flex flex-wrap gap-2 text-xs">
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+        <div className="flex flex-wrap gap-2 text-xs font-mono">
+          <button
+            type="button"
             onClick={() => applyScenario('Hot Steam Flush', { temperature_c: 85, spm: 5.5, tubing_pressure_bar: 22 })}
-            className="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 transition flex items-center gap-1 font-mono text-[11px]"
+            className="px-2.5 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-rose-500/30 text-rose-300 transition flex items-center gap-1 text-[10px]"
           >
             <Flame className="w-3 h-3 text-rose-400" /> Hot Steam Flush (85°C)
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          </button>
+          <button
+            type="button"
             onClick={() => applyScenario('Cold Viscous Trap', { temperature_c: 32, spm: 6.5, tubing_pressure_bar: 25 })}
-            className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition flex items-center gap-1 font-mono text-[11px]"
+            className="px-2.5 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-amber-500/30 text-amber-300 transition flex items-center gap-1 text-[10px]"
           >
             <Snowflake className="w-3 h-3 text-amber-400" /> Cold Shock (32°C)
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          </button>
+          <button
+            type="button"
             onClick={() => applyScenario('High-Speed Pumping', { vfd_frequency_hz: 55, spm: 7.5, stroke_length_m: 2.8 })}
-            className="px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 transition flex items-center gap-1 font-mono text-[11px]"
+            className="px-2.5 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-sky-500/30 text-sky-300 transition flex items-center gap-1 text-[10px]"
           >
             <Settings className="w-3 h-3 text-sky-400" /> High-Speed (7.5 SPM)
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          </button>
+          <button
+            type="button"
             onClick={() => applyScenario('Deep Fluid Drawdown', { fluid_level_m: 1050, tubing_pressure_bar: 30 })}
-            className="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 transition flex items-center gap-1 font-mono text-[11px]"
+            className="px-2.5 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-indigo-500/30 text-indigo-300 transition flex items-center gap-1 text-[10px]"
           >
             <Droplets className="w-3 h-3 text-indigo-400" /> Deep Drawdown (1050m)
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          </button>
+          <button
+            type="button"
             onClick={() =>
               applyScenario('Baseline Reset', {
                 temperature_c: 50,
@@ -347,225 +327,241 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
                 fluid_level_m: 850,
               })
             }
-            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition flex items-center gap-1 font-mono text-[11px]"
+            className="px-2.5 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 transition flex items-center gap-1 text-[10px]"
           >
             <RotateCcw className="w-3 h-3" /> Reset Baseline
-          </motion.button>
+          </button>
         </div>
       </div>
 
-      {/* SECTION 1: OPERATOR SURFACE MACHINERY */}
-      <div className="space-y-3 pt-1">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-sky-500/10 border border-sky-500/30 text-sky-300 tracking-wider">
-            OPERATOR &bull; SURFACE MACHINERY
+      {/* Surface Machinery & Lift Setpoints */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between border-b border-[#1E293B] pb-1.5">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-sky-500/10 border border-sky-500/30 text-sky-300 tracking-wider">
+            SURFACE MACHINERY SETPOINTS
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          {/* 1. SPM */}
-          <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5 space-y-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
+          {/* SPM */}
+          <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-amber-400" /> Pumping Speed (SPM)
+              <span className="text-slate-300 font-medium flex items-center gap-1.5 text-[11px]">
+                <Activity className="w-3 h-3 text-amber-400" /> Pumping Speed (SPM)
               </span>
-              <span className="font-mono font-bold text-amber-400 text-sm">
-                {spm <= 0.05 ? <span className="text-rose-400 font-bold">0.0 (OFF)</span> : `${spm.toFixed(1)} SPM`}
+              <span className="font-bold text-amber-400">
+                {spm <= 0.05 ? <span className="text-rose-400">0.0 (OFF)</span> : `${spm.toFixed(1)} SPM`}
               </span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setParam('spm', 0.0)}
-                className={`px-2 py-1 rounded-lg border text-[11px] font-mono font-bold transition ${
+                className={`px-2 py-1 rounded border text-[10px] font-bold transition ${
                   spm <= 0.05
                     ? 'bg-rose-500/20 border-rose-500/50 text-rose-300'
-                    : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-rose-400'
+                    : 'bg-[#080B10] hover:bg-[#151D27] border-[#1E293B] text-rose-400'
                 }`}
               >
                 0
               </button>
               <button
+                type="button"
                 onClick={() => setParam('spm', Math.max(0, Math.round((spm - 0.5) * 10) / 10))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowDown className="w-3.5 h-3.5" />
+                <ArrowDown className="w-3 h-3" />
               </button>
-              <button onClick={() => setParam('spm', 3.5)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">3.5</button>
-              <button onClick={() => setParam('spm', 5.5)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">5.5</button>
-              <button onClick={() => setParam('spm', 7.5)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">7.5</button>
-              <button onClick={() => setParam('spm', 9.5)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">9.5</button>
+              <button type="button" onClick={() => setParam('spm', 3.5)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">3.5</button>
+              <button type="button" onClick={() => setParam('spm', 5.5)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">5.5</button>
+              <button type="button" onClick={() => setParam('spm', 7.5)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">7.5</button>
+              <button type="button" onClick={() => setParam('spm', 9.5)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">9.5</button>
               <button
+                type="button"
                 onClick={() => setParam('spm', Math.min(15, Math.round((spm + 0.5) * 10) / 10))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowUp className="w-3.5 h-3.5" />
+                <ArrowUp className="w-3 h-3" />
               </button>
             </div>
           </div>
 
-          {/* 2. VFD */}
-          <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5 space-y-2.5">
+          {/* VFD */}
+          <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-sky-400" /> VFD Frequency (Hz)
+              <span className="text-slate-300 font-medium flex items-center gap-1.5 text-[11px]">
+                <Zap className="w-3 h-3 text-cyan-400" /> VFD Frequency (Hz)
               </span>
-              <span className="font-mono font-bold text-sky-400 text-sm">
-                {vfd <= 0.05 ? <span className="text-rose-400 font-bold">0.0 Hz (OFF)</span> : `${vfd.toFixed(1)} Hz`}
+              <span className="font-bold text-cyan-400">
+                {vfd <= 0.05 ? <span className="text-rose-400">0.0 Hz (OFF)</span> : `${vfd.toFixed(1)} Hz`}
               </span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setParam('vfd_frequency_hz', 0)}
-                className={`px-2 py-1 rounded-lg border text-[11px] font-mono font-bold transition ${
+                className={`px-2 py-1 rounded border text-[10px] font-bold transition ${
                   vfd <= 0.05
                     ? 'bg-rose-500/20 border-rose-500/50 text-rose-300'
-                    : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-rose-400'
+                    : 'bg-[#080B10] hover:bg-[#151D27] border-[#1E293B] text-rose-400'
                 }`}
               >
                 0Hz
               </button>
               <button
+                type="button"
                 onClick={() => setParam('vfd_frequency_hz', Math.max(0, Math.round(vfd - 5)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowDown className="w-3.5 h-3.5" />
+                <ArrowDown className="w-3 h-3" />
               </button>
-              <button onClick={() => setParam('vfd_frequency_hz', 30)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">30Hz</button>
-              <button onClick={() => setParam('vfd_frequency_hz', 40)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">40Hz</button>
-              <button onClick={() => setParam('vfd_frequency_hz', 50)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">50Hz</button>
-              <button onClick={() => setParam('vfd_frequency_hz', 60)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">60Hz</button>
+              <button type="button" onClick={() => setParam('vfd_frequency_hz', 30)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">30</button>
+              <button type="button" onClick={() => setParam('vfd_frequency_hz', 40)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">40</button>
+              <button type="button" onClick={() => setParam('vfd_frequency_hz', 50)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">50</button>
+              <button type="button" onClick={() => setParam('vfd_frequency_hz', 60)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">60</button>
               <button
+                type="button"
                 onClick={() => setParam('vfd_frequency_hz', Math.min(70, Math.round(vfd + 5)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowUp className="w-3.5 h-3.5" />
+                <ArrowUp className="w-3 h-3" />
               </button>
             </div>
           </div>
 
-          {/* 3. Stroke Length */}
-          <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5 space-y-2.5">
+          {/* Stroke Length */}
+          <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-emerald-400" /> Stroke Length (m)
+              <span className="text-slate-300 font-medium flex items-center gap-1.5 text-[11px]">
+                <Layers className="w-3 h-3 text-emerald-400" /> Stroke Length (m)
               </span>
-              <span className="font-mono font-bold text-emerald-400 text-sm">{stroke.toFixed(2)} m</span>
+              <span className="font-bold text-emerald-400">{stroke.toFixed(2)} m</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setParam('stroke_length_m', Math.max(1.0, Math.round((stroke - 0.2) * 10) / 10))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowDown className="w-3.5 h-3.5" />
+                <ArrowDown className="w-3 h-3" />
               </button>
-              <button onClick={() => setParam('stroke_length_m', 1.8)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">1.8m</button>
-              <button onClick={() => setParam('stroke_length_m', 2.5)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">2.5m</button>
-              <button onClick={() => setParam('stroke_length_m', 3.2)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">3.2m</button>
-              <button onClick={() => setParam('stroke_length_m', 4.0)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">4.0m</button>
+              <button type="button" onClick={() => setParam('stroke_length_m', 1.8)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">1.8m</button>
+              <button type="button" onClick={() => setParam('stroke_length_m', 2.5)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">2.5m</button>
+              <button type="button" onClick={() => setParam('stroke_length_m', 3.2)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">3.2m</button>
+              <button type="button" onClick={() => setParam('stroke_length_m', 4.0)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">4.0m</button>
               <button
+                type="button"
                 onClick={() => setParam('stroke_length_m', Math.min(5.0, Math.round((stroke + 0.2) * 10) / 10))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowUp className="w-3.5 h-3.5" />
+                <ArrowUp className="w-3 h-3" />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* SECTION 2: NATURE & DOWNHOLE DYNAMICS */}
-      <div className="space-y-3 pt-1">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 tracking-wider">
-            NATURE &bull; DOWNHOLE &amp; RESERVOIR DYNAMICS
+      {/* Nature & Downhole Reservoir Dynamics */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between border-b border-[#1E293B] pb-1.5">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-amber-500/10 border border-amber-500/30 text-amber-300 tracking-wider">
+            RESERVOIR &amp; DOWNHOLE CONDITIONS
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
           {/* Temperature */}
-          <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5 space-y-2.5">
+          <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-rose-400" /> Wellbore Temp (°C)
+              <span className="text-slate-300 font-medium flex items-center gap-1.5 text-[11px]">
+                <Flame className="w-3 h-3 text-rose-400" /> Wellbore Temp (°C)
               </span>
-              <span className="font-mono font-bold text-rose-400 text-sm">{temp.toFixed(1)}°C</span>
+              <span className="font-bold text-rose-400">{temp.toFixed(1)}°C</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setParam('temperature_c', Math.max(20, Math.round(temp - 5)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowDown className="w-3.5 h-3.5" />
+                <ArrowDown className="w-3 h-3" />
               </button>
-              <button onClick={() => setParam('temperature_c', 35)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">35°C</button>
-              <button onClick={() => setParam('temperature_c', 50)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">50°C</button>
-              <button onClick={() => setParam('temperature_c', 75)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">75°C</button>
-              <button onClick={() => setParam('temperature_c', 95)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">95°C</button>
+              <button type="button" onClick={() => setParam('temperature_c', 35)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">35°C</button>
+              <button type="button" onClick={() => setParam('temperature_c', 50)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">50°C</button>
+              <button type="button" onClick={() => setParam('temperature_c', 75)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">75°C</button>
+              <button type="button" onClick={() => setParam('temperature_c', 95)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">95°C</button>
               <button
+                type="button"
                 onClick={() => setParam('temperature_c', Math.min(180, Math.round(temp + 5)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowUp className="w-3.5 h-3.5" />
+                <ArrowUp className="w-3 h-3" />
               </button>
             </div>
           </div>
 
           {/* Tubing Pressure */}
-          <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5 space-y-2.5">
+          <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                <Gauge className="w-3.5 h-3.5 text-sky-400" /> Tubing Pressure (bar)
+              <span className="text-slate-300 font-medium flex items-center gap-1.5 text-[11px]">
+                <Gauge className="w-3 h-3 text-cyan-400" /> Tubing Pressure (bar)
               </span>
-              <span className="font-mono font-bold text-sky-400 text-sm">{press.toFixed(1)} bar</span>
+              <span className="font-bold text-cyan-400">{press.toFixed(1)} bar</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setParam('tubing_pressure_bar', Math.max(5, Math.round(press - 5)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowDown className="w-3.5 h-3.5" />
+                <ArrowDown className="w-3 h-3" />
               </button>
-              <button onClick={() => setParam('tubing_pressure_bar', 15)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">15 bar</button>
-              <button onClick={() => setParam('tubing_pressure_bar', 25)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">25 bar</button>
-              <button onClick={() => setParam('tubing_pressure_bar', 40)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">40 bar</button>
-              <button onClick={() => setParam('tubing_pressure_bar', 60)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">60 bar</button>
+              <button type="button" onClick={() => setParam('tubing_pressure_bar', 15)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">15</button>
+              <button type="button" onClick={() => setParam('tubing_pressure_bar', 25)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">25</button>
+              <button type="button" onClick={() => setParam('tubing_pressure_bar', 40)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">40</button>
+              <button type="button" onClick={() => setParam('tubing_pressure_bar', 60)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">60</button>
               <button
+                type="button"
                 onClick={() => setParam('tubing_pressure_bar', Math.min(90, Math.round(press + 5)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowUp className="w-3.5 h-3.5" />
+                <ArrowUp className="w-3 h-3" />
               </button>
             </div>
           </div>
 
           {/* Fluid Level Depth */}
-          <div className="glass-panel-sub border border-slate-800/90 rounded-xl p-3.5 space-y-2.5">
+          <div className="bg-[#111821] border border-[#1E293B] rounded p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-indigo-400" /> Fluid Level Depth (m)
+              <span className="text-slate-300 font-medium flex items-center gap-1.5 text-[11px]">
+                <Layers className="w-3 h-3 text-indigo-400" /> Fluid Level Depth (m)
               </span>
-              <span className="font-mono font-bold text-indigo-400 text-sm">{fluidLevel.toFixed(0)} m</span>
+              <span className="font-bold text-indigo-400">{fluidLevel.toFixed(0)} m</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
+                type="button"
                 onClick={() => setParam('fluid_level_m', Math.max(300, Math.round(fluidLevel - 50)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowDown className="w-3.5 h-3.5" />
+                <ArrowDown className="w-3 h-3" />
               </button>
-              <button onClick={() => setParam('fluid_level_m', 650)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">650m</button>
-              <button onClick={() => setParam('fluid_level_m', 850)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">850m</button>
-              <button onClick={() => setParam('fluid_level_m', 1050)} className="flex-1 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-mono">1050m</button>
+              <button type="button" onClick={() => setParam('fluid_level_m', 650)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">650m</button>
+              <button type="button" onClick={() => setParam('fluid_level_m', 850)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">850m</button>
+              <button type="button" onClick={() => setParam('fluid_level_m', 1050)} className="flex-1 py-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300 text-[10px]">1050m</button>
               <button
+                type="button"
                 onClick={() => setParam('fluid_level_m', Math.min(1150, Math.round(fluidLevel + 50)))}
-                className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300"
+                className="p-1 rounded bg-[#080B10] hover:bg-[#151D27] border border-[#1E293B] text-slate-300"
               >
-                <ArrowUp className="w-3.5 h-3.5" />
+                <ArrowUp className="w-3 h-3" />
               </button>
             </div>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
+
+export default SimulatorControls;
