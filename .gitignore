@@ -41,3 +41,7 @@ env/
 build/
 out/
 .next/
+*.zip
+.env.txt
+.agents/
+

@@ -53,21 +53,21 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 md:px-6 py-3 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 bg-[#243140]/95 border-b border-[#3d4d60] px-4 md:px-6 py-3 backdrop-blur-md">
       <div className="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-4">
         {/* Brand & Subtitle */}
         <div className="flex items-center gap-3.5">
           <motion.div
             whileHover={{ scale: 1.05, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2.5 bg-gradient-to-br from-sky-500/20 to-cyan-500/10 border border-sky-400/30 rounded-xl text-sky-400 shadow-lg shadow-sky-500/10"
+            className="p-2.5 bg-[#1d4f66]/40 border border-sky-500/30 rounded-lg text-sky-300"
           >
             <Cpu className="w-5 h-5 md:w-6 md:h-6 animate-pulse" />
           </motion.div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base md:text-xl font-black tracking-tight text-white flex items-center gap-2 font-mono">
-                <span className="shimmer-text">THERMO-LIFT</span>
+              <h1 className="text-base md:text-xl font-bold tracking-tight text-[#f3e6d0] flex items-center gap-2 font-mono">
+                <span>THERMO-LIFT</span>
               </h1>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold bg-sky-500/10 border border-sky-500/30 text-sky-300 tracking-wider">
                 DIGITAL TWIN
@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="hidden 2xl:flex items-center gap-3 glass-panel-sub px-4 py-1.5 rounded-xl border border-slate-800 text-xs shadow-inner"
+              className="hidden 2xl:flex items-center gap-3 glass-panel-sub px-4 py-1.5 rounded-lg text-xs"
             >
               {/* CSS Stage */}
               <div className="flex items-center gap-2 px-1">
@@ -200,7 +200,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="relative">
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition relative"
+              className="p-2 rounded-lg bg-[#222c39] border border-[#3d4d60] hover:border-[#5b6d82] text-slate-400 hover:text-white transition-all duration-150 active:scale-95 relative"
               title="Notifications & Alerts"
             >
               <Bell className="w-3.5 h-3.5" />
@@ -233,7 +233,7 @@ export const Header: React.FC<HeaderProps> = ({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleRefresh}
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition shadow-sm"
+            className="p-2 rounded-lg bg-[#222c39] border border-[#3d4d60] hover:border-[#5b6d82] text-slate-400 hover:text-white transition-all duration-150"
             title="Refresh AI predictions & Telemetry"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-sky-400' : ''}`} />

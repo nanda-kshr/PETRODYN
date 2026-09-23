@@ -50,10 +50,9 @@ export const PredictiveRiskPanel: React.FC<PredictiveRiskPanelProps> = ({ predic
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.35 }}
-      className="glass-panel rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-slate-700/80 transition-all"
+      className="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden"
     >
-      {/* Category Indicator Accent */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 shadow-sm" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-purple-500/70" />
 
       {/* Header */}
       <div className="flex items-center justify-between mb-4">

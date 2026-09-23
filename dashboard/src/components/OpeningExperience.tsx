@@ -63,15 +63,14 @@ export const OpeningExperience: React.FC<OpeningExperienceProps> = ({ onComplete
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.02 }}
       transition={{ duration: 0.6, ease: 'easeInOut' }}
-      className="fixed inset-0 z-[100] bg-[#050811] flex flex-col items-center justify-between p-6 select-none overflow-hidden"
+      className="fixed inset-0 z-[100] bg-[#1c2430] flex flex-col items-center justify-between p-6 select-none overflow-hidden"
     >
       {/* Background Desert Night Horizon & Technical Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b14_1px,transparent_1px),linear-gradient(to_bottom,#1e293b14_1px,transparent_1px)] bg-[size:36px_36px]" />
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#020408] to-transparent pointer-events-none" />
 
       {/* Atmospheric Radial Lights */}
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#151b24] to-transparent pointer-events-none" />
 
       {/* Top Bar with System Protocol Status */}
       <div className="relative z-20 w-full max-w-6xl flex items-center justify-between text-xs font-mono">

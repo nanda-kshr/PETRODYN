@@ -44,9 +44,9 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="glass-panel rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-slate-700/80 transition-all"
+        className="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-400 to-sky-400 shadow-sm" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-amber-500/60" />
         
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -102,8 +102,8 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
                     boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
                   }}
                 />
-                <Area yAxisId="left" type="monotone" dataKey="rod_load_kn" stroke="#f59e0b" strokeWidth={2.5} fillOpacity={1} fill="url(#loadGrad)" isAnimationActive={false} />
-                <Area yAxisId="right" type="monotone" dataKey="motor_current_a" stroke="#38bdf8" strokeWidth={2} fillOpacity={1} fill="url(#currentGrad)" isAnimationActive={false} />
+                <Area yAxisId="left" type="monotone" dataKey="rod_load_kn" stroke="#f59e0b" strokeWidth={2.5} fillOpacity={1} fill="url(#loadGrad)" isAnimationActive animationDuration={700} />
+                <Area yAxisId="right" type="monotone" dataKey="motor_current_a" stroke="#38bdf8" strokeWidth={2} fillOpacity={1} fill="url(#currentGrad)" isAnimationActive animationDuration={700} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
@@ -119,9 +119,9 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.25 }}
-        className="glass-panel rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-slate-700/80 transition-all"
+        className="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 shadow-sm" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-500/70" />
         
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -177,8 +177,8 @@ export const TelemetryGraphs: React.FC<TelemetryGraphsProps> = ({ history }) => 
                     boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
                   }}
                 />
-                <Area yAxisId="left" type="monotone" dataKey="production_bopd" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#prodGrad)" isAnimationActive={false} />
-                <Area yAxisId="right" type="monotone" dataKey="fluid_level_m" stroke="#818cf8" strokeWidth={2} fillOpacity={1} fill="url(#fluidGrad)" isAnimationActive={false} />
+                <Area yAxisId="left" type="monotone" dataKey="production_bopd" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#prodGrad)" isAnimationActive animationDuration={700} />
+                <Area yAxisId="right" type="monotone" dataKey="fluid_level_m" stroke="#818cf8" strokeWidth={2} fillOpacity={1} fill="url(#fluidGrad)" isAnimationActive animationDuration={700} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (

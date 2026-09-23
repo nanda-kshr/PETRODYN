@@ -22,9 +22,9 @@ export const OptimizationAdvisoryCard: React.FC<OptimizationAdvisoryCardProps> =
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.45 }}
-      className="glass-panel rounded-2xl p-5 shadow-xl relative overflow-hidden space-y-4 group hover:border-slate-700/80 transition-all"
+      className="glass-panel rounded-xl p-5 relative overflow-hidden space-y-4"
     >
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-sm" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-amber-600/70" />
 
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800/80">

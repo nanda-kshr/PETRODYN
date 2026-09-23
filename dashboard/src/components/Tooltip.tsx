@@ -32,7 +32,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 p-3.5 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-xl shadow-2xl text-left pointer-events-none transition-all duration-200 glow-sky">
+        <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 p-3.5 bg-[#1c2633] border border-[#4a5d73] rounded-lg shadow-xl text-left pointer-events-none">
           <div className="flex items-center justify-between gap-2 mb-1.5 border-b border-slate-800 pb-1.5">
             <span className="text-xs font-bold text-slate-100 tracking-wide">
               {title || 'Information'}

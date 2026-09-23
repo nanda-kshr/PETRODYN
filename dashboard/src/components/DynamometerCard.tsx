@@ -51,9 +51,9 @@ export const DynamometerCard: React.FC<DynamometerCardProps> = ({ analytics, lat
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1 }}
-      className="glass-panel rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-slate-700/80 transition-all"
+      className="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden"
     >
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 shadow-sm" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-amber-500/70" />
 
       {/* Header */}
       <div className="flex items-center justify-between mb-3">

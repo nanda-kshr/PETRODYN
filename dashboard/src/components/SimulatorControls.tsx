@@ -139,9 +139,9 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="glass-panel rounded-2xl p-5 shadow-2xl space-y-5 relative overflow-hidden"
+      className="glass-panel rounded-xl p-5 space-y-5 relative overflow-hidden"
     >
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500 shadow-sm" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-500/70" />
 
       {/* Top Header & Simulation Loop Toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
