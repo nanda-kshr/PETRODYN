@@ -1,4 +1,11 @@
 services:
+  mongodb:
+    image: mongo:7
+    container_name: petrodyn-mongodb
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+
   data_ingestion:
     build:
       context: ./data_ingestion
@@ -8,8 +15,10 @@ services:
       - "3002:3002"
     environment:
       - PORT=3002
-      - MONGODB_URI=mongodb+srv://publicUser:lfenK47pOfrv6KlA@mycluster.mt6afrt.mongodb.net/petrodyn?retryWrites=true&w=majority&appName=mycluster
+      - MONGODB_URI=mongodb://mongodb:27017/petrodyn
       - MONGODB_DB_NAME=petrodyn
+    depends_on:
+      - mongodb
     restart: unless-stopped
 
   pump_simulator:
@@ -39,13 +48,14 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
-      - MONGODB_URI=mongodb+srv://publicUser:lfenK47pOfrv6KlA@mycluster.mt6afrt.mongodb.net/petrodyn?retryWrites=true&w=majority&appName=mycluster
+      - MONGODB_URI=mongodb://mongodb:27017/petrodyn
       - MONGODB_DB_NAME=petrodyn
       - DATA_INGESTION_URL=http://data_ingestion:3002
       - PIPELINE_INTERVAL_SECONDS=5
       - DEFAULT_WELL_ID=BW-001
     depends_on:
       - data_ingestion
+      - mongodb
     restart: unless-stopped
 
   dashboard:

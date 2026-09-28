@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { TelemetryRecord } from '@/types/telemetry';
+import { Skiper43 } from '@/components/ui/skiper43';
 
 interface HeaderProps {
   wellId: string;
@@ -138,50 +139,60 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right: Operational Connection State & Actions */}
         <div className="flex items-center gap-2.5">
-          {/* Connection Badge */}
-          <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono border ${
-              isConnected
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-            }`}
+          {/* Connection Badge with Vercel Tooltip */}
+          <Skiper43
+            content={isConnected ? "10Hz Live WebSocket Stream Active" : "WebSocket Disconnected"}
+            shortcut={isConnected ? "WS 10Hz" : "RETRY"}
+            side="bottom"
           >
-            {isConnected ? (
-              <>
-                <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-                <span className="font-semibold">SCADA ONLINE</span>
-              </>
-            ) : (
-              <>
-                <WifiOff className="w-3 h-3 text-rose-400" />
-                <span className="font-semibold">OFFLINE</span>
-              </>
-            )}
-          </div>
-
-          {/* Replay Intro Button */}
-          {onReplayIntro && (
-            <button
-              type="button"
-              onClick={onReplayIntro}
-              title="Replay Well-to-Surface Animation"
-              className="p-1.5 rounded bg-[#111821] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-white transition cursor-pointer"
+            <div
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono border cursor-default ${
+                isConnected
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                  : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              }`}
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
+              {isConnected ? (
+                <>
+                  <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
+                  <span className="font-semibold">SCADA ONLINE</span>
+                </>
+              ) : (
+                <>
+                  <WifiOff className="w-3 h-3 text-rose-400" />
+                  <span className="font-semibold">OFFLINE</span>
+                </>
+              )}
+            </div>
+          </Skiper43>
+
+          {/* Replay Intro Button with Vercel Tooltip */}
+          {onReplayIntro && (
+            <Skiper43 content="Replay Well-to-Surface Intro" shortcut="INTRO" side="bottom">
+              <button
+                type="button"
+                onClick={onReplayIntro}
+                aria-label="Replay Well-to-Surface Animation"
+                className="p-1.5 rounded bg-[#111821] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-white transition cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+            </Skiper43>
           )}
 
-          {/* Sync / Refresh Button */}
-          <button
-            type="button"
-            onClick={handleRefresh}
-            title="Refresh In-Memory Predictions"
-            className={`p-1.5 rounded bg-[#111821] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-cyan-300 transition cursor-pointer ${
-              isRefreshing ? 'animate-spin text-cyan-400' : ''
-            }`}
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-          </button>
+          {/* Sync / Refresh Button with Vercel Tooltip */}
+          <Skiper43 content="Sync AI Models & Telemetry" shortcut="⌘R" side="bottom">
+            <button
+              type="button"
+              onClick={handleRefresh}
+              aria-label="Refresh In-Memory Predictions"
+              className={`p-1.5 rounded bg-[#111821] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-cyan-300 transition cursor-pointer ${
+                isRefreshing ? 'animate-spin text-cyan-400' : ''
+              }`}
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+            </button>
+          </Skiper43>
         </div>
       </div>
     </header>

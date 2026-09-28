@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY tsconfig.json tailwind.config.js postcss.config.js next.config.js ./
+COPY components.json* ./
 COPY public/ ./public/
 COPY src/ ./src/
 

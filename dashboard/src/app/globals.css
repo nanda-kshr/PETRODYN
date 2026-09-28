@@ -3,109 +3,169 @@
 @tailwind utilities;
 
 :root {
-  --background: #080B10;
-  --foreground: #F8FAFC;
-  --panel: #0D1219;
-  --panel-inner: #111821;
-  --panel-elevated: #151D27;
-  --stroke: #1E293B;
-  --stroke-subtle: #17202D;
-  --stroke-active: #334155;
-  --muted: #94A3B8;
-  --muted-dark: #64748B;
-  --accent-cyan: #06B6D4;
+  --background: #070A0F;
+  --foreground: #F1F5F9;
+  --panel: #0B1017;
+  --panel-inner: #0F1622;
+  --panel-elevated: #141E2E;
+  --stroke: #1E2A3B;
+  --stroke-subtle: #15202E;
+  --stroke-active: #2A3B52;
+  --muted: #8A99AD;
+  --muted-dark: #52637A;
+  --accent-cyan: #00F0FF;
   --accent-amber: #F59E0B;
-  --accent-emerald: #10B981;
-  --accent-rose: #F43F5E;
+  --accent-orange: #FF6B00;
+  --accent-emerald: #00E676;
+  --accent-rose: #FF1744;
+  --accent-purple: #8B5CF6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-gutter: stable;
 }
 
 body {
   color: var(--foreground);
   background-color: var(--background);
   background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.05), transparent),
-    linear-gradient(180deg, #080B10 0%, #05070A 100%);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    radial-gradient(ellipse 90% 50% at 50% -10%, rgba(0, 240, 255, 0.03), transparent),
+    radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.02), transparent),
+    linear-gradient(180deg, #070A0F 0%, #05070B 100%);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   letter-spacing: -0.01em;
 }
 
 .font-mono {
-  font-family: var(--font-mono), ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-family: var(--font-mono), 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Precision Industrial Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #080B10;
+  background: #070A0F;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
-  border-radius: 4px;
+  background: #1E2A3B;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #2A3B52;
 }
 
-/* Industrial Control Room Panel Tokens */
-.glass-panel {
-  background: var(--panel);
-  border: 1px solid var(--stroke);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+/* Industrial Control Room Glassmorphism Tokens */
+.scada-panel {
+  background: rgba(11, 16, 23, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 
-.glass-panel:hover {
-  border-color: var(--stroke-active);
+.scada-panel:hover {
+  border-color: rgba(0, 240, 255, 0.25) !important;
+  box-shadow: 0 12px 40px 0 rgba(0, 240, 255, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
 
-.glass-panel-sub {
-  background: var(--panel-inner);
-  border: 1px solid var(--stroke-subtle);
+.scada-panel-inner {
+  background: rgba(15, 22, 34, 0.52) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
-.glass-panel-elevated {
-  background: var(--panel-elevated);
-  border: 1px solid var(--stroke);
+.scada-panel-elevated {
+  background: rgba(20, 30, 46, 0.72) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
-/* Technical HUD Crosshairs & Grid Backgrounds */
-.bg-tech-grid {
-  background-image: linear-gradient(to right, rgba(30, 41, 59, 0.15) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(30, 41, 59, 0.15) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Technical Reticle Grid Backgrounds */
+.bg-reticle-grid {
+  background-image: 
+    linear-gradient(to right, rgba(30, 42, 59, 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 42, 59, 0.35) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-.bg-tech-dots {
-  background-image: radial-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px);
-  background-size: 16px 16px;
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(51, 65, 85, 0.4) 1px, transparent 1px);
+  background-size: 14px 14px;
 }
 
-/* Controlled Precision Glows */
+/* Scanline Texture Layer */
+.scanline-overlay {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+/* Precision Optical Indicator Glows */
 .glow-cyan-sm {
-  box-shadow: 0 0 12px -2px rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 .glow-amber-sm {
-  box-shadow: 0 0 12px -2px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
 }
 .glow-emerald-sm {
-  box-shadow: 0 0 12px -2px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
 }
 .glow-rose-sm {
-  box-shadow: 0 0 12px -2px rgba(244, 63, 94, 0.35);
+  box-shadow: 0 0 10px rgba(255, 23, 68, 0.35);
 }
 
-/* Animation Keyframes */
-@keyframes scada-pulse {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.3; }
-  100% { transform: scale(0.95); opacity: 0.8; }
+/* Fluid Path Motion Keyframes */
+@keyframes fluid-flow-up {
+  from {
+    stroke-dashoffset: 40;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
-.animate-scada-pulse {
-  animation: scada-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+@keyframes fluid-inflow-right {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-flow-up {
+  animation: fluid-flow-up 1.8s linear infinite;
+}
+
+.animate-flow-inflow {
+  animation: fluid-inflow-right 2.4s linear infinite;
+}
+
+@keyframes thermal-breathing {
+  0% { opacity: 0.65; transform: scaleY(0.96); }
+  50% { opacity: 0.9; transform: scaleY(1.04); }
+  100% { opacity: 0.65; transform: scaleY(0.96); }
+}
+
+.animate-thermal-pulse {
+  transform-origin: center bottom;
+  animation: thermal-breathing 4s ease-in-out infinite;
 }

@@ -60,3 +60,5 @@ export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
 
   return { latest, history, isConnected };
 }
+
+export default useTelemetryWebSocket;
