@@ -16,7 +16,7 @@ export class IngestionClientService {
   ) {
     this.ingestionUrl = this.configService.get<string>(
       'INGESTION_API_URL',
-      'http://localhost:3001/api/v1/ingest',
+      'http://localhost:4002/api/v1/ingest',
     );
     this.simulateFailure =
       this.configService.get<string>('SIMULATE_TRANSMISSION_FAILURE', 'false') ===

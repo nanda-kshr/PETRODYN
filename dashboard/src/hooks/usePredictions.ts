@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { AnalyticsData, PredictionsData, WellHealthScore } from '@/types/telemetry';
 
 export function usePredictions(apiUrl?: string, wellId = 'BW-001', intervalMs = 3000) {
-  const url = apiUrl || process.env.NEXT_PUBLIC_AI_API_URL || 'http://localhost:8000';
+  const url = apiUrl || process.env.NEXT_PUBLIC_AI_API_URL || 'http://localhost:4000';
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [predictions, setPredictions] = useState<PredictionsData | null>(null);
   const [healthScore, setHealthScore] = useState<WellHealthScore | null>(null);

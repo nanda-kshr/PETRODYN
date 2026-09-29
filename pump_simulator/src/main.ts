@@ -19,7 +19,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
-  const port = process.env.PORT || 3001;
+  const port = 4001;
   await app.listen(port);
 
   logger.log(`SRP Pump Simulator running on http://localhost:${port}`);

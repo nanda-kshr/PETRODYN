@@ -251,7 +251,7 @@ export const OpeningExperience: React.FC<OpeningExperienceProps> = ({ onComplete
       <div className="relative z-20 w-full max-w-6xl flex items-center justify-between border-t border-slate-800/80 pt-3 text-[11px] font-mono text-slate-400">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>PORT 3002 BUS CONNECTED</span>
+          <span>PORT 4002 BUS CONNECTED</span>
         </div>
         <div className="flex items-center gap-4">
           <span>SPM: 5.5</span>

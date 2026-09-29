@@ -22,7 +22,7 @@ export class IngestionGateway
   private readonly logger = new Logger(IngestionGateway.name);
 
   afterInit() {
-    this.logger.log('Data Ingestion WebSocket Gateway initialized on port 3002');
+    this.logger.log('Data Ingestion WebSocket Gateway initialized on port 4002');
   }
 
   handleConnection(client: Socket) {

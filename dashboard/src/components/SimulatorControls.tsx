@@ -37,7 +37,7 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
   latest,
   onParameterChanged,
 }) => {
-  const url = simulatorApiUrl || process.env.NEXT_PUBLIC_SIMULATOR_API_URL || 'http://localhost:3001';
+  const url = simulatorApiUrl || process.env.NEXT_PUBLIC_SIMULATOR_API_URL || 'http://localhost:4001';
   const [loadingParam, setLoadingParam] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
 
@@ -153,7 +153,7 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
                 IN-SILICO SIMULATION &amp; EXPERIMENTAL SETPOINT WORKSTATION
               </h3>
               <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-sm bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold">
-                PORT 3001 // DIGITAL TWIN LOOP
+                PORT 4001 // DIGITAL TWIN LOOP
               </span>
             </div>
             <p className="text-[9.5px] font-mono text-slate-400">
@@ -444,7 +444,7 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
                 <Cpu className="w-3.5 h-3.5 text-cyan-400" /> SIMULATION RESPONSE
               </span>
               <span className="text-[9px] text-emerald-300 bg-emerald-500/10 px-1 py-0.2 rounded-sm border border-emerald-500/30">
-                PORT 3001
+                PORT 4001
               </span>
             </div>
 

@@ -19,7 +19,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
-  const port = process.env.PORT || 3002;
+  const port = 4002;
   await app.listen(port);
 
   logger.log(`Data Ingestion Service running on http://localhost:${port}`);
