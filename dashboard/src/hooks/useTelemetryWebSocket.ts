@@ -5,7 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { TelemetryRecord } from '@/types/telemetry';
 
 export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
-  const url = wsUrl || process.env.NEXT_PUBLIC_INGESTION_WS_URL || 'http://localhost:4002';
+  const url = wsUrl || 'http://3.110.122.44:4002';
   const [latest, setLatest] = useState<TelemetryRecord | null>(null);
   const [history, setHistory] = useState<TelemetryRecord[]>([]);
   const [isConnected, setIsConnected] = useState(false);
