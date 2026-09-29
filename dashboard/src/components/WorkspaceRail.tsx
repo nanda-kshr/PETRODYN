@@ -16,6 +16,7 @@ interface WorkspaceRailProps {
     analytics?: number;
     predictions?: number;
   };
+  className?: string;
 }
 
 interface NavItem {
@@ -35,6 +36,7 @@ export const WorkspaceRail: React.FC<WorkspaceRailProps> = ({
   isCollapsed = false,
   onToggleCollapse,
   badgeCounts = { analytics: 15, predictions: 13 },
+  className = '',
 }) => {
   const navItems: NavItem[] = [
     {
@@ -79,9 +81,9 @@ export const WorkspaceRail: React.FC<WorkspaceRailProps> = ({
 
   return (
     <aside
-      className={`sticky top-[49px] h-[calc(100vh-49px)] z-40 bg-[#070A0F]/65 border-r border-[#1E2A3B]/70 backdrop-blur-xl flex flex-col justify-between transition-all duration-200 shrink-0 ${
+      className={`sticky top-[96px] h-[calc(100vh-96px)] z-30 bg-[#070A0F]/65 border-r border-[#1E2A3B]/70 backdrop-blur-xl flex flex-col justify-between transition-all duration-200 shrink-0 ${
         isCollapsed ? 'w-14' : 'w-56'
-      }`}
+      } ${className}`}
     >
       {/* Upper Navigation Stack */}
       <div className="flex flex-col py-3 px-1.5 space-y-1">
