@@ -41,7 +41,7 @@ export default function DashboardPage() {
   const [isFxEnabled, setIsFxEnabled] = useState(true);
 
   const { latest, history, isConnected } = useTelemetryWebSocket(
-    'http://3.110.122.44:4002',
+    process.env.NEXT_PUBLIC_INGESTION_WS_URL,
     wellId,
   );
 
