@@ -37,7 +37,12 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
   latest,
   onParameterChanged,
 }) => {
-  const url = simulatorApiUrl || process.env.NEXT_PUBLIC_SIMULATOR_API_URL || 'http://localhost:4001';
+  const rawUrl = simulatorApiUrl !== undefined && simulatorApiUrl !== ''
+    ? simulatorApiUrl
+    : (process.env.NEXT_PUBLIC_SIMULATOR_API_URL !== undefined && process.env.NEXT_PUBLIC_SIMULATOR_API_URL !== ''
+        ? process.env.NEXT_PUBLIC_SIMULATOR_API_URL
+        : '/simulator');
+  const url = rawUrl.replace(/\/$/, '');
   const [loadingParam, setLoadingParam] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
 

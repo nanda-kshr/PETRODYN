@@ -5,7 +5,9 @@ import { io, Socket } from 'socket.io-client';
 import { TelemetryRecord } from '@/types/telemetry';
 
 export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
-  const url = wsUrl || 'http://3.110.122.44:4002';
+  const baseUrl = (wsUrl !== undefined && wsUrl !== '')
+    ? wsUrl.replace(/\/$/, '')
+    : (typeof window !== 'undefined' ? window.location.origin : '');
   const [latest, setLatest] = useState<TelemetryRecord | null>(null);
   const [history, setHistory] = useState<TelemetryRecord[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -13,7 +15,7 @@ export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
 
   useEffect(() => {
     // 1. Initial REST fetch so graphs aren't blank
-    fetch(`${url}/api/v1/telemetry/history?well_id=${wellId}&limit=35`)
+    fetch(`${baseUrl}/api/v1/telemetry/history?well_id=${wellId}&limit=35`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.data && Array.isArray(data.data)) {
@@ -27,7 +29,7 @@ export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
       .catch((err) => console.warn('Initial telemetry fetch fallback:', err));
 
     // 2. Establish WebSocket connection
-    const socket = io(url, {
+    const socket = io(baseUrl || undefined, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,
@@ -56,7 +58,7 @@ export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
     return () => {
       socket.disconnect();
     };
-  }, [url, wellId]);
+  }, [baseUrl, wellId]);
 
   return { latest, history, isConnected };
 }
