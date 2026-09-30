@@ -68,9 +68,9 @@ services:
       - "3003:3003"
     environment:
       - PORT=3003
-      - NEXT_PUBLIC_INGESTION_WS_URL=
-      - NEXT_PUBLIC_AI_API_URL=/ai
-      - NEXT_PUBLIC_SIMULATOR_API_URL=/simulator
+      - NEXT_PUBLIC_INGESTION_WS_URL=https://sih.instaroid.page
+      - NEXT_PUBLIC_AI_API_URL=https://sih.instaroid.page/ai
+      - NEXT_PUBLIC_SIMULATOR_API_URL=https://sih.instaroid.page/simulator
       - NEXT_PUBLIC_WELL_ID=BW-001
     depends_on:
       - data_ingestion

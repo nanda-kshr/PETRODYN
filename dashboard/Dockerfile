@@ -10,10 +10,10 @@ COPY components.json* ./
 COPY public/ ./public/
 COPY src/ ./src/
 
-ENV NEXT_PUBLIC_INGESTION_WS_URL=""
-ENV NEXT_PUBLIC_AI_API_URL="/ai"
-ENV NEXT_PUBLIC_SIMULATOR_API_URL="/simulator"
-ENV NEXT_PUBLIC_WELL_ID="BW-001"
+ENV NEXT_PUBLIC_INGESTION_WS_URL=https://sih.instaroid.page
+ENV NEXT_PUBLIC_AI_API_URL=https://sih.instaroid.page/ai
+ENV NEXT_PUBLIC_SIMULATOR_API_URL=https://sih.instaroid.page/simulator
+ENV NEXT_PUBLIC_WELL_ID=BW-001
 
 RUN npm run build
 

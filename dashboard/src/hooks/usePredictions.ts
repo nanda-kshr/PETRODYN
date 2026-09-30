@@ -4,12 +4,7 @@ import { useState, useEffect } from 'react';
 import { AnalyticsData, PredictionsData, WellHealthScore } from '@/types/telemetry';
 
 export function usePredictions(apiUrl?: string, wellId = 'BW-001', intervalMs = 3000) {
-  const rawUrl = apiUrl !== undefined && apiUrl !== ''
-    ? apiUrl
-    : (process.env.NEXT_PUBLIC_AI_API_URL !== undefined && process.env.NEXT_PUBLIC_AI_API_URL !== ''
-        ? process.env.NEXT_PUBLIC_AI_API_URL
-        : '/ai');
-  const url = rawUrl.replace(/\/$/, '');
+  const url = (apiUrl && apiUrl.trim() !== '') ? apiUrl.replace(/\/$/, '') : 'https://sih.instaroid.page/ai';
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [predictions, setPredictions] = useState<PredictionsData | null>(null);
   const [healthScore, setHealthScore] = useState<WellHealthScore | null>(null);

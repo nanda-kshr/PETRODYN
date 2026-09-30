@@ -41,12 +41,12 @@ export default function DashboardPage() {
   const [isFxEnabled, setIsFxEnabled] = useState(true);
 
   const { latest, history, isConnected } = useTelemetryWebSocket(
-    process.env.NEXT_PUBLIC_INGESTION_WS_URL,
+    'https://sih.instaroid.page',
     wellId,
   );
 
   const { analytics, predictions, healthScore, lastUpdated, refetch } = usePredictions(
-    process.env.NEXT_PUBLIC_AI_API_URL,
+    'https://sih.instaroid.page/ai',
     wellId,
     3000,
   );
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                     className="space-y-4"
                   >
                     <SimulatorControls
-                      simulatorApiUrl={process.env.NEXT_PUBLIC_SIMULATOR_API_URL}
+                      simulatorApiUrl="https://sih.instaroid.page/simulator"
                       latest={latest}
                       onParameterChanged={refetch}
                     />

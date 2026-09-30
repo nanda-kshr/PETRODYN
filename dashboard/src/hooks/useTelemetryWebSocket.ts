@@ -5,9 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { TelemetryRecord } from '@/types/telemetry';
 
 export function useTelemetryWebSocket(wsUrl?: string, wellId = 'BW-001') {
-  const baseUrl = (wsUrl !== undefined && wsUrl !== '')
-    ? wsUrl.replace(/\/$/, '')
-    : (typeof window !== 'undefined' ? window.location.origin : '');
+  const baseUrl = (wsUrl && wsUrl.trim() !== '') ? wsUrl.replace(/\/$/, '') : 'https://sih.instaroid.page';
   const [latest, setLatest] = useState<TelemetryRecord | null>(null);
   const [history, setHistory] = useState<TelemetryRecord[]>([]);
   const [isConnected, setIsConnected] = useState(false);

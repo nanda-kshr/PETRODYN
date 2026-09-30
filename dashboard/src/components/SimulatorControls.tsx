@@ -37,12 +37,7 @@ export const SimulatorControls: React.FC<SimulatorControlsProps> = ({
   latest,
   onParameterChanged,
 }) => {
-  const rawUrl = simulatorApiUrl !== undefined && simulatorApiUrl !== ''
-    ? simulatorApiUrl
-    : (process.env.NEXT_PUBLIC_SIMULATOR_API_URL !== undefined && process.env.NEXT_PUBLIC_SIMULATOR_API_URL !== ''
-        ? process.env.NEXT_PUBLIC_SIMULATOR_API_URL
-        : '/simulator');
-  const url = rawUrl.replace(/\/$/, '');
+  const url = (simulatorApiUrl && simulatorApiUrl.trim() !== '') ? simulatorApiUrl.replace(/\/$/, '') : 'https://sih.instaroid.page/simulator';
   const [loadingParam, setLoadingParam] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState<string | null>(null);
 
